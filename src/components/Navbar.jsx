@@ -22,7 +22,6 @@ const Navbar = () => {
         </span>
 
         <span id='hamburger'>
-
           <div className="hamburger" onClick={toggleMenu} aria-label="Toggle menu">
             {isMenuOpen ? <FaTimes size={30} className="text-red-700" /> : <FaBars size={30} className="text-red-700" />}
           </div>
