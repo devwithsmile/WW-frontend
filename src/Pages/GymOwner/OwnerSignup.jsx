@@ -45,7 +45,6 @@ const OwnerSignup = () => {
         {
           email: data.email,
           password: data.password,
-          role: 'owner',
         },
         {
           headers: {

@@ -50,7 +50,6 @@ const Register = () => {
         {
           email: data.email,
           password: data.password,
-          role: 'owner',
         },
         {
           headers: {
