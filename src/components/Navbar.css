@@ -1,5 +1,4 @@
 .header {
-    position: fixed;
     height: 70px;
     width: 100%;
     top: 0;
@@ -7,7 +6,11 @@
     z-index: 1;
     transition: .3s ease-in;
     overflow: hidden;
-    background-color: rgba(0,0,0,.9);
+    background-color: rgba(0,0,0,.4);
+}
+
+color{
+    color: #c13838;
 }
 
 .header .navbar {
@@ -20,9 +23,6 @@
     padding: 0 1rem;
 }
 
-.header .nav-menu a {
-    color: #ffffff;
-}
 
 .header .navbar img {
     width: 250px;
@@ -36,12 +36,9 @@
 .header .nav-item {
     padding: 1rem;
     font-weight: 500;
+    color: aliceblue;
 }
 
-.header .nav-item a:hover {
-    padding-bottom: 12px;
-    border-bottom: 3px solid var(--secondary-color);
-}
 
 .hamburger {
     display: none;
@@ -51,7 +48,7 @@
 @media screen and (max-width:940px) {
     .header {
         max-width: 100%;
-        background-color: rgba(0,0,0,.9);
+        background-color: rgba(0,0,0,.4);
     }
 
     .header .navbar {
@@ -72,7 +69,7 @@
         height: 100vh;
         z-index: 999;
         text-align: center;
-        transition: .3s;
+        transition: .3s ease-out;
     }
 
     .nav-menu.active {
@@ -80,7 +77,8 @@
     }
 
     .nav-item {
-        margin: 1.5rem 0;
+        margin: 1.2rem 0;
+        padding: 0 !important;
     }
 
     .header .navbar img {
