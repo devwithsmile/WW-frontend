@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { toast } from 'react-toastify'
 import GymForm1 from '../../components/GymForm/GymForm1'
 import GymForm2 from '../../components/GymForm/GymForm2'
-import useAuth from '../../hooks/useAuth'
 import api from '../../api/axios.js'
 
 
@@ -11,7 +10,6 @@ const GymForm = () => {
   const [currentForm, setCurrentForm] = useState('form1')
   const [formData1, setFormData1] = useState({})
   const [formData2, setFormData2] = useState({})
-  const { isAuthenticated } = useAuth();
 
   // Function to handle form submission and transition to next form
   const handleForm1Submit = (data) => {

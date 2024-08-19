@@ -1,21 +1,24 @@
 import React, { useEffect, useState } from 'react'
-import axios from 'axios'
 import imageforPage from '../../assets/images/signin.jpg'
+import api from '../../api/axios'
+import moment from 'moment'
+import { toast } from 'react-toastify'
+import { data } from 'autoprefixer'
 
 function TodaysBookingSection({ todayBookings = [] }) {
   const [gymImage, setGymImage] = useState(null)
   const [rating, setRating] = useState(0)
   const [hover, setHover] = useState(0)
+  const [duration, setDuration] = useState(1); // needs to change dyanamically later. currently not setting to 0 bcuz backend will send error  
 
   useEffect(() => {
     if (todayBookings.length > 0) {
-      const booking = todayBookings[0]
-      const bookingDate = booking.date.replace(/\//g, '-') // Replace '/' with '-' for the API call
+      const todayDate = moment().format('DD/MM/YYYY'); // Replace '/' with '-' for the API call
 
-      axios
-        .get(`http://localhost:3000/users/bookings/images?date=${bookingDate}`)
+      api
+        .get(`users/bookings/images?date=${todayDate}`)
         .then((response) => {
-          setGymImage(response.data.imageUrl)
+          setGymImage(response.data[0].image_urls[0])
         })
         .catch((error) => {
           console.error('Error fetching gym image:', error)
@@ -37,38 +40,58 @@ function TodaysBookingSection({ todayBookings = [] }) {
     return date.toLocaleDateString('en-US', options)
   }
 
-  const booking = todayBookings[0]
+  const booking = todayBookings[0];
+
   const gymName = booking.gym_name || 'Gym Name'
   const bookingDate = formatDate(booking.date) || 'Booking Date'
   const bookingSlot = `${booking.from} - ${booking.to}` || 'Booking Slot'
   const welcomeMessage = `Welcome to ${gymName}!`
 
   // Extend request goes here
-  const handleExtend = () => {}
+  const handleExtend = async () => {
+
+    const response = await api.post(`/bookings/extends`, {
+      "bookingId": booking._id,
+      "duration": duration
+    })
+
+    if (response.status == 201) {
+      toast.success("Extension requested. Please wait for Gym's response")
+    }
+
+  }
   // Cancel request goes here
-  const handleCancel = () => {}
+  const handleCancel = async () => {
+    const response = await api.patch('/bookings/cancel', {
+      "bookingId": booking._id
+    })
+
+    if (response.status == 200) {
+      toast.success("your booking has been cancelled.")
+    }
+  }
 
   return (
     <>
       <h3 className='mb-4 text-lg font-bold'>Today{"'"}s Bookings</h3>
-      <div className='w-full flex justify-center items-center flex-col shadow-lg lg:flex-row mb-6'>
+      <div className='flex flex-col items-center justify-center w-full mb-6 shadow-lg lg:flex-row'>
         {/* Gym Image */}
         <div className='flex-none w-full lg:w-[30rem] h-[15rem] overflow-hidden relative'>
           <img
             src={gymImage || imageforPage}
             alt='Gym Image'
-            className='w-full h-full object-cover'
+            className='object-cover w-full h-full'
           />
         </div>
 
-        <div className='w-full my-3 px-3 md:px-6'>
+        <div className='w-full px-3 my-3 md:px-6'>
           {/* Gym Content */}
           <div className='flex flex-col items-center justify-between md:flex-row md:items-start'>
             <div className='w-full'>
               <h2 className='text-xl font-bold'>{gymName}</h2>
               <p className='text-sm text-gray-400'>{welcomeMessage}</p>
             </div>
-            <div className='w-full flex flex-row justify-between mt-2 md:flex-col md:text-right md:mt-0'>
+            <div className='flex flex-row justify-between w-full mt-2 md:flex-col md:text-right md:mt-0'>
               <p className='text-sm'>{bookingDate}</p>
               <p className='text-sm'>{bookingSlot}</p>
             </div>
@@ -82,12 +105,18 @@ function TodaysBookingSection({ todayBookings = [] }) {
                 (star) => (
                   <span
                     key={star}
-                    className={`text-2xl cursor-pointer ${
-                      (hover || rating) >= star
-                        ? 'text-red-500'
-                        : 'text-gray-600'
-                    }`}
-                    onClick={() => setRating(star)}
+                    className={`text-2xl cursor-pointer ${(hover || rating) >= star
+                      ? 'text-red-500'
+                      : 'text-gray-600'
+                      }`}
+                    onClick={async () => setRating(
+                      star,
+                      await api.patch('/bookings/ratings', {
+                        "booking_id": booking._id,
+                        "rating": rating
+                      })
+
+                    )}
                     onMouseEnter={() => setHover(star)}
                     onMouseLeave={() => setHover(0)}
                   >
@@ -99,7 +128,7 @@ function TodaysBookingSection({ todayBookings = [] }) {
           </div>
 
           {/* Buttons */}
-          <div className='flex flex-col space-y-4 items-center justify-center mt-6 sm:flex-row sm:space-y-0 sm:space-x-4 md:justify-end'>
+          <div className='flex flex-col items-center justify-center mt-6 space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4 md:justify-end'>
             <button
               type='button'
               onClick={handleExtend}

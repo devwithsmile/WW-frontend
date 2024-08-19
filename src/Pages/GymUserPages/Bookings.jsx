@@ -51,7 +51,6 @@ function Bookings() {
 
         const bookings = response.data.bookingsWithGymName
 
-        console.log(response)
 
         if (bookings.length > 0) {
           const today = new Date()
@@ -64,8 +63,6 @@ function Bookings() {
             return bookingDate.isSame(today, 'day')
           })
 
-          const dataToPass = todayBookings[0]
-          console.log(dataToPass)
 
           const pastBookings = bookings.filter((booking) => {
             const bookingDate = moment(booking.date, 'DD/MM/YYYY').startOf(
@@ -73,6 +70,7 @@ function Bookings() {
             )
             return bookingDate.isBefore(today, 'day')
           })
+          
 
           const futureBookings = bookings.filter((booking) => {
             const bookingDate = moment(booking.date, 'DD/MM/YYYY').startOf(
@@ -98,8 +96,13 @@ function Bookings() {
   }, [isAuthenticated])
 
   // Remove ratings from future bookings
-  const removeRatingsForFutureBookings = futureBookings.map(
-    ({ ratings, ...booking }) => booking
+  const removeUnwantedForFutureBookings = futureBookings.map(
+    ({ _id, rating, ...booking }) => booking
+  )
+
+  // Remove ratings from future bookings
+  const removeUnwantedFromPastbookings = pastBookings.map(
+    ({ _id, ...booking }) => booking
   )
 
   const renderTableWithPagination = (pagination, data, title) => {
@@ -125,9 +128,8 @@ function Bookings() {
               <li
                 key={index}
                 onClick={() => setActivePage(number)}
-                className={`pagination-item ${
-                  number === pageNumbers.activePage ? 'active' : ''
-                }`}
+                className={`pagination-item ${number === pageNumbers.activePage ? 'active' : ''
+                  }`}
               >
                 {number}
               </li>
@@ -151,24 +153,23 @@ function Bookings() {
       ) : (
         <>
           <TodaysBookingSection todayBookings={todayBookings} />
-          {/* {todayBookings.length > 0 &&
-            renderTableWithPagination(
-              todayPagination,
-              todayBookings,
-              "Today's Bookings"
-            )} */}
-          {pastBookings.length > 0 &&
-            renderTableWithPagination(
-              pastPagination,
-              pastBookings,
-              'Past Bookings'
-            )}
+
+
           {futureBookings.length > 0 &&
             renderTableWithPagination(
               futurePagination,
-              removeRatingsForFutureBookings,
+              removeUnwantedForFutureBookings,
               'Future Bookings'
             )}
+
+
+          {pastBookings.length > 0 &&
+            renderTableWithPagination(
+              pastPagination,
+              removeUnwantedFromPastbookings,
+              'Past Bookings'
+            )}
+
         </>
       )}
     </div>

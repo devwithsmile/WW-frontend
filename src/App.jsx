@@ -14,9 +14,11 @@ import PageNotFound from './Pages/Error/PageNotFound'
 import Profile from './Pages/GymUserPages/Profile'
 import OwnerSignup from './Pages/GymOwnerPages/OwnerSignup'
 import OwnerLogin from './Pages/GymOwnerPages/OwnerLogin'
+import OwnerProfile from './Pages/GymOwnerPages/Profile'
 import GymForm from './Pages/GymOwnerPages/GymForm'
 import ForgotPasswordForm from './Pages/ResetPassword/ForgotPassword'
 import ResetPassword from './Pages/ResetPassword/ResetPassword'
+import SlotPage from './Pages/GymOwnerPages/SlotPage'
 
 // Main application component
 function App() {
@@ -32,9 +34,15 @@ function App() {
                 path='/'
                 element={<PublicRoute element={<LandingPage />} />}
               />
-              <Route path='/home' element={<PrivateRoute element={<Home />} />}/>
+              <Route
+                path='/home'
+                element={<PrivateRoute element={<Home />} />}
+              />
               <Route path='/search' element={<SearchPage />} />
-              <Route path='/bookings' element={<PrivateRoute element={<Bookings />} />}/>
+              <Route
+                path='/bookings'
+                element={<PrivateRoute element={<Bookings />} />}
+              />
               <Route
                 path='/login'
                 element={<PublicRoute element={<Login />} />}
@@ -61,6 +69,8 @@ function App() {
                 element={<PublicRoute element={<OwnerLogin />} />}
               />
               <Route path='/owners/gymForm' element={<GymForm />} />
+              <Route path='/owners/accounts' element={<OwnerProfile />} />
+              <Route path='/owners/slots' element={<SlotPage />} />
               {/* Error Routes */}
               <Route path='*' element={<PageNotFound />} />
             </Routes>

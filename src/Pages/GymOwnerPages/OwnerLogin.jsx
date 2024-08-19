@@ -4,6 +4,7 @@ import { useNavigate, Link, useLocation } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 import { FcGoogle } from 'react-icons/fc'
+import useAuth from '../../hooks/useAuth'
 import api from '../../api/axios.js'
 
 const OwnerLogin = () => {
@@ -12,6 +13,7 @@ const OwnerLogin = () => {
     handleSubmit,
     formState: { errors },
   } = useForm()
+  const { login } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
@@ -27,6 +29,7 @@ const OwnerLogin = () => {
       // Handle successful login
       if (response.status === 200) {
         toast.success(response.data.message)
+        login(response.data.token)
 
         console.log('Logged In data : ', response.data)
         navigate(from, { replace: true })
