@@ -12,7 +12,8 @@ export default {
         wwsecondarytext:'#94a3b8',
         wwred : '#c13838',
         wwTitleRed:'#b91c1c',
-        wwnavbar:'#1f1c1c '
+        wwnavbar:'#1f1c1c ',
+        wwpopdiv:'#333333',
       },
       screens: {
         '2xl': '1536px', // To handle ultrawide displays

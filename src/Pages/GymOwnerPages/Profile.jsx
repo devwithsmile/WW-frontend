@@ -1,34 +1,35 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { useForm, Controller } from 'react-hook-form'
-import { PiCurrencyInrLight } from 'react-icons/pi'
-import PropTypes from 'prop-types'
-import api from '../../api/axios'
-import dataStates from '../../data/states.json'
+import React, { useEffect, useRef, useState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { PiCurrencyInrLight } from "react-icons/pi";
+import PropTypes from "prop-types";
+import api from "../../api/axios";
+import dataStates from "../../data/states.json";
 
-import classNames from 'classnames' // Remove this one after dev
-import { toast } from 'react-toastify'
+import classNames from "classnames"; // Remove this one after dev
+import { toast } from "react-toastify";
 
-const GAP_FROM_TOP = 150 // When submitting focusing on input will give 150 gap on top
+const GAP_FROM_TOP = 150; // When submitting focusing on input will give 150 gap on top
 // Price-related constants
 const PRICE = {
   DEFAULT: 150,
   MAX: 500,
   MIN: 1,
-}
+};
 // Facilities constants
 const FACILITIES = [
-  'Shower',
-  'Locker',
-  'Air Conditioning',
-  'Parking',
-  'Cardio',
-  'Calisthenics',
-  'Steam Room',
-  'Yoga Studio',
-]
+  "Shower",
+  "Locker",
+  "Air Conditioning",
+  "Parking",
+  "Cardio",
+  "Calisthenics",
+  "Steam Room",
+  "Yoga Studio",
+];
 
-const states = dataStates
-const GymForm = ({ gymId = '66c06c22b3789c8442c0d273' }) => {
+const states = dataStates;
+const Profile = ({ gymId = "66c06c22b3789c8442c0d273" }) => {
+  // TODO: connect gymID for the owner
   const {
     control,
     handleSubmit,
@@ -38,98 +39,98 @@ const GymForm = ({ gymId = '66c06c22b3789c8442c0d273' }) => {
     setValue,
     getValues,
     formState: { isSubmitting, errors },
-  } = useForm()
-  const [initialValues, setInitialValues] = useState([])
+  } = useForm();
+  const [initialValues, setInitialValues] = useState([]);
 
-  const fileInputRef = useRef(null)
-  const [displayValue, setDisplayValue] = useState('')
+  const fileInputRef = useRef(null);
+  const [displayValue, setDisplayValue] = useState("");
 
   // Watch fields
-  const watchFacilities = watch('facilities', [])
-  const watchImages = watch('images')
-  const price = watch('price')
+  const watchFacilities = watch("facilities", []);
+  const watchImages = watch("images");
+  const price = watch("price");
 
   // Render the values for all the fields
   useEffect(() => {
     const fetchGymDetails = async () => {
       try {
-        const response = await api.get(`/gyms/${gymId}`)
+        const response = await api.get(`/gyms/${gymId}`);
         if (response.status === 200) {
-          const gymData = response.data
+          const gymData = response.data;
           //   console.log('Fetched gym data:', gymData)
 
           // Google Map Link
-          const googleMapsLink = `https://www.google.com/maps?q=${gymData.map_detail?.latitude},${gymData.map_detail?.longitude}`
+          const googleMapsLink = `https://www.google.com/maps?q=${gymData.map_detail?.latitude},${gymData.map_detail?.longitude}`;
 
           // Use reset to initialize or update form values
           reset({
-            gymName: gymData.gym_name || '',
-            description: gymData.description || '',
-            addressLine1: gymData.address?.address_line_1 || '',
-            addressLine2: gymData.address?.address_line_2 || '',
-            city: gymData.address?.city || '',
-            state: gymData.address?.state || '',
-            pincode: gymData.address?.pincode || '',
-            price: gymData.price || '',
-            maxOccupants: gymData.total_occupancy || '',
-            gstNumber: gymData.gst_number || '',
+            gymName: gymData.gym_name || "",
+            description: gymData.description || "",
+            addressLine1: gymData.address?.address_line_1 || "",
+            addressLine2: gymData.address?.address_line_2 || "",
+            city: gymData.address?.city || "",
+            state: gymData.address?.state || "",
+            pincode: gymData.address?.pincode || "",
+            price: gymData.price || "",
+            maxOccupants: gymData.total_occupancy || "",
+            gstNumber: gymData.gst_number || "",
             facilities: gymData.facilities || [],
-            googleMapsLink: googleMapsLink || '',
+            googleMapsLink: googleMapsLink || "",
             // TODO: TypeError: Failed to execute 'createObjectURL' on 'URL': Overload resolution failed.
             images: gymData.images || [],
-          })
-          setInitialValues(gymData)
+          });
+          setInitialValues(gymData);
         }
       } catch (error) {
-        console.error('Failed to fetch gym details', error)
+        console.error("Failed to fetch gym details", error);
       }
-    }
+    };
 
-    fetchGymDetails()
-  }, [gymId, reset])
+    fetchGymDetails();
+  }, [gymId, reset]);
 
   // Set focus when required field is not there
   useEffect(() => {
-    const firstErrorField = Object.keys(errors)[0]
+    const firstErrorField = Object.keys(errors)[0];
     if (firstErrorField) {
-      setFocus(firstErrorField)
+      setFocus(firstErrorField);
       setTimeout(() => {
-        const element = document.getElementById(firstErrorField)
+        const element = document.getElementById(firstErrorField);
         if (element) {
           // Calculate the desired scroll position
           const elementPosition =
-            element.getBoundingClientRect().top + window.pageYOffset
+            element.getBoundingClientRect().top + window.pageYOffset;
           window.scrollTo({
             top: elementPosition - GAP_FROM_TOP,
-            behavior: 'smooth',
-          })
+            behavior: "smooth",
+          });
         }
-      }, 100)
+      }, 100);
     }
-  }, [errors, setFocus])
+  }, [errors, setFocus]);
 
   // Remove https from map link
   useEffect(() => {
-    const values = getValues()
+    const values = getValues();
 
     if (values.googleMapsLink) {
-      setDisplayValue(values.googleMapsLink.replace(/^https:\/\//, ''))
+      setDisplayValue(values.googleMapsLink.replace(/^https:\/\//, ""));
     }
-  }, [getValues])
+  }, [getValues]);
 
   // setting the price
   const handleSliderChange = (event) => {
-    setValue('price', event.target.value)
-  }
+    setValue("price", event.target.value);
+  };
 
   const handleFileInputClick = () => {
-    fileInputRef.current.click()
-  }
+    fileInputRef.current.click();
+  };
 
   const handleRemoveImage = (index, onChange, value) => {
-    const updatedImages = value.filter((_, idx) => idx !== index)
-    onChange(updatedImages)
-  }
+    const updatedImages = value.filter((_, idx) => idx !== index);
+    onChange(updatedImages);
+  };
 
   const onSubmit = async (data) => {
     try {
@@ -149,12 +150,12 @@ const GymForm = ({ gymId = '66c06c22b3789c8442c0d273' }) => {
       //   console.log('updatedFields gym data:', updatedFields)
 
       const response = await api.patch(`/gyms/${initialValues._id}`, data, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      })
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
       if (response.status === 200) {
-        console.log('response : ' + response)
-        toast.success('Gym details updated successfully.')
+        console.log("response : " + response);
+        toast.success("Gym details updated successfully.");
       }
 
       //   if (Object.keys(updatedFields).length > 0) {
@@ -169,182 +170,182 @@ const GymForm = ({ gymId = '66c06c22b3789c8442c0d273' }) => {
       // toast.success('No changes detected.')
       //   }
     } catch (error) {
-      console.error('Failed to update gym details', error)
-      toast.error('Failed to update gym details.')
+      console.error("Failed to update gym details", error);
+      toast.error("Failed to update gym details.");
     }
-  }
+  };
 
   return (
-    <div className='flex items-center justify-center bg-wwbg text-white mt-4 md:my-12'>
-      <div className='w-full max-w-2xl bg-wwbg shadow-lg p-8'>
-        <h3 className='text-2xl font-bold text-center text-wwred mb-4'>
+    <div className="flex items-center justify-center bg-wwbg text-white mt-4 md:my-12">
+      <div className="w-full max-w-2xl bg-wwbg shadow-lg p-8">
+        <h3 className="text-2xl font-bold text-center text-wwred mb-4">
           Account Settings
         </h3>
-        <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Gym Name */}
-          <div className='space-y-4'>
-            <h3 className='text-2xl font-semibold mb-4 text-wwred'>Gym Name</h3>
-            <p className='mb-2'>Add a short Gym Name about your gym</p>
+          <div className="space-y-4">
+            <h3 className="text-2xl font-semibold mb-4 text-wwred">Gym Name</h3>
+            <p className="mb-2">Add a short Gym Name about your gym</p>
             <Controller
-              name='gymName'
+              name="gymName"
               control={control}
-              defaultValue=''
+              defaultValue=""
               render={({ field }) => (
                 <input
                   {...field}
-                  placeholder='Gym Name'
+                  placeholder="Gym Name"
                   className={`w-full px-3 py-2 border ${
-                    errors.gymName ? 'border-red-500' : 'border-gray-600'
+                    errors.gymName ? "border-red-500" : "border-gray-600"
                   } bg-wwbg text-white focus:outline-none focus:border-red-500`}
                 />
               )}
             />
             {errors.gymName && (
-              <p className='text-red-500 text-sm mt-1'>
+              <p className="text-red-500 text-sm mt-1">
                 {errors.gymName.message}
               </p>
             )}
           </div>
 
           {/* Description */}
-          <div className='space-y-4'>
-            <h3 className='text-2xl font-semibold mb-4 text-wwred'>
+          <div className="space-y-4">
+            <h3 className="text-2xl font-semibold mb-4 text-wwred">
               Description
             </h3>
-            <p className='mb-2'>Add a short description about your gym</p>
+            <p className="mb-2">Add a short description about your gym</p>
             <Controller
-              name='description'
+              name="description"
               control={control}
-              defaultValue=''
+              defaultValue=""
               render={({ field }) => (
                 <textarea
                   {...field}
-                  placeholder='Description'
-                  className='w-full px-3 py-2 h-28 border border-gray-600 bg-wwbg text-white focus:outline-none focus:border-red-500'
+                  placeholder="Description"
+                  className="w-full px-3 py-2 h-28 border border-gray-600 bg-wwbg text-white focus:outline-none focus:border-red-500"
                 />
               )}
             />
           </div>
 
           {/* Address */}
-          <div className='space-y-4'>
-            <h3 className='text-2xl font-semibold mb-4 text-wwred'>Address</h3>
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+          <div className="space-y-4">
+            <h3 className="text-2xl font-semibold mb-4 text-wwred">Address</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Address Line 1 */}
-              <div className='mb-4'>
+              <div className="mb-4">
                 <label
-                  className='block text-sm font-medium mb-1 text-white'
-                  htmlFor='addressLine1'
+                  className="block text-sm font-medium mb-1 text-white"
+                  htmlFor="addressLine1"
                 >
-                  Address Line 1<span className='text-red-500'>*</span>
+                  Address Line 1<span className="text-red-500">*</span>
                 </label>
                 <Controller
-                  name='addressLine1'
+                  name="addressLine1"
                   control={control}
-                  defaultValue=''
+                  defaultValue=""
                   rules={{
-                    required: 'Address Line 1 is required',
+                    required: "Address Line 1 is required",
                     minLength: {
                       value: 3,
                       message:
-                        'Address Line 1 must be at least 3 characters long',
+                        "Address Line 1 must be at least 3 characters long",
                     },
                   }}
                   render={({ field }) => (
                     <input
                       {...field}
-                      placeholder='Address 1'
+                      placeholder="Address 1"
                       className={`w-full px-3 py-2 border ${
                         errors.addressLine1
-                          ? 'border-red-500'
-                          : 'border-gray-600'
+                          ? "border-red-500"
+                          : "border-gray-600"
                       } bg-wwbg text-white focus:outline-none focus:border-red-500`}
                     />
                   )}
                 />
                 {errors.addressLine1 && (
-                  <p className='text-red-500 text-sm mt-1'>
+                  <p className="text-red-500 text-sm mt-1">
                     {errors.addressLine1.message}
                   </p>
                 )}
               </div>
               {/* Address Line 2 */}
-              <div className='mb-4'>
+              <div className="mb-4">
                 <label
-                  className='block text-sm font-medium mb-1 text-white'
-                  htmlFor='addressLine2'
+                  className="block text-sm font-medium mb-1 text-white"
+                  htmlFor="addressLine2"
                 >
                   Address Line 2
                 </label>
                 <Controller
-                  name='addressLine2'
+                  name="addressLine2"
                   control={control}
-                  defaultValue=''
+                  defaultValue=""
                   render={({ field }) => (
                     <input
                       {...field}
-                      placeholder='Address 2'
-                      className='w-full px-3 py-2 border border-gray-600 bg-wwbg text-white focus:outline-none focus:border-red-500'
+                      placeholder="Address 2"
+                      className="w-full px-3 py-2 border border-gray-600 bg-wwbg text-white focus:outline-none focus:border-red-500"
                     />
                   )}
                 />
               </div>
               {/* City */}
-              <div className='mb-4'>
+              <div className="mb-4">
                 <label
-                  className='block text-sm font-medium mb-1 text-white'
-                  htmlFor='city'
+                  className="block text-sm font-medium mb-1 text-white"
+                  htmlFor="city"
                 >
-                  City<span className='text-red-500'>*</span>
+                  City<span className="text-red-500">*</span>
                 </label>
                 <Controller
-                  name='city'
+                  name="city"
                   control={control}
-                  defaultValue=''
+                  defaultValue=""
                   rules={{
-                    required: 'City is required',
+                    required: "City is required",
                     minLength: {
                       value: 2,
-                      message: 'City must be at least 2 characters long',
+                      message: "City must be at least 2 characters long",
                     },
                   }}
                   render={({ field }) => (
                     <input
                       {...field}
-                      placeholder='City'
+                      placeholder="City"
                       className={`w-full px-3 py-2 border ${
-                        errors.city ? 'border-red-500' : 'border-gray-600'
+                        errors.city ? "border-red-500" : "border-gray-600"
                       } bg-wwbg text-white focus:outline-none focus:border-red-500`}
                     />
                   )}
                 />
                 {errors.city && (
-                  <p className='text-red-500 text-sm mt-1'>
+                  <p className="text-red-500 text-sm mt-1">
                     {errors.city.message}
                   </p>
                 )}
               </div>
               {/* State Dropdown */}
-              <div className='mb-4'>
+              <div className="mb-4">
                 <label
-                  className='block text-sm font-medium mb-1 text-white'
-                  htmlFor='state'
+                  className="block text-sm font-medium mb-1 text-white"
+                  htmlFor="state"
                 >
-                  State<span className='text-red-500'>*</span>
+                  State<span className="text-red-500">*</span>
                 </label>
                 <Controller
-                  name='state'
+                  name="state"
                   control={control}
-                  defaultValue='AP'
-                  rules={{ required: 'State is required' }}
+                  defaultValue="AP"
+                  rules={{ required: "State is required" }}
                   render={({ field }) => (
                     <select
                       {...field}
                       className={`w-full px-3 py-2 border ${
-                        errors.state ? 'border-red-500' : 'border-gray-600'
+                        errors.state ? "border-red-500" : "border-gray-600"
                       } bg-wwbg text-white focus:outline-none focus:border-red-500`}
                     >
-                      <option className='text-muted' value=''>
+                      <option className="text-muted" value="">
                         Select State
                       </option>
                       {states.map((state) => (
@@ -356,42 +357,42 @@ const GymForm = ({ gymId = '66c06c22b3789c8442c0d273' }) => {
                   )}
                 />
                 {errors.state && (
-                  <p className='text-red-500 text-sm mt-1'>
+                  <p className="text-red-500 text-sm mt-1">
                     {errors.state.message}
                   </p>
                 )}
               </div>
               {/* Pincode Dropdown */}
-              <div className='mb-4'>
+              <div className="mb-4">
                 <label
-                  className='block text-sm font-medium mb-1 text-white'
-                  htmlFor='pincode'
+                  className="block text-sm font-medium mb-1 text-white"
+                  htmlFor="pincode"
                 >
-                  PIN Code<span className='text-red-500'>*</span>
+                  PIN Code<span className="text-red-500">*</span>
                 </label>
                 <Controller
-                  name='pincode'
+                  name="pincode"
                   control={control}
-                  defaultValue=''
+                  defaultValue=""
                   rules={{
-                    required: 'PIN Code is required',
+                    required: "PIN Code is required",
                     pattern: {
                       value: /^\d{6}$/,
-                      message: 'PIN Code must be exactly 6 digits',
+                      message: "PIN Code must be exactly 6 digits",
                     },
                   }}
                   render={({ field }) => (
                     <input
                       {...field}
-                      placeholder='PIN'
+                      placeholder="PIN"
                       className={`w-full px-3 py-2 border ${
-                        errors.pincode ? 'border-red-500' : 'border-gray-600'
+                        errors.pincode ? "border-red-500" : "border-gray-600"
                       } bg-wwbg text-white focus:outline-none focus:border-red-500`}
                     />
                   )}
                 />
                 {errors.pincode && (
-                  <p className='text-red-500 text-sm mt-1'>
+                  <p className="text-red-500 text-sm mt-1">
                     {errors.pincode.message}
                   </p>
                 )}
@@ -400,171 +401,171 @@ const GymForm = ({ gymId = '66c06c22b3789c8442c0d273' }) => {
           </div>
 
           {/* Pricing and Location */}
-          <div className='space-y-4'>
-            <h3 className='text-2xl font-semibold mb-4 text-wwred'>
+          <div className="space-y-4">
+            <h3 className="text-2xl font-semibold mb-4 text-wwred">
               Pricing and Location
             </h3>
             {/* Google Maps Link */}
-            <div className='mb-4'>
+            <div className="mb-4">
               <label
-                className='block text-sm font-medium mb-1 text-white'
-                htmlFor='googleMapsLink'
+                className="block text-sm font-medium mb-1 text-white"
+                htmlFor="googleMapsLink"
               >
                 Google Maps Link
               </label>
-              <div className='relative'>
+              <div className="relative">
                 <Controller
-                  name='googleMapsLink'
+                  name="googleMapsLink"
                   control={control}
-                  defaultValue=''
+                  defaultValue=""
                   render={({ field }) => (
                     <input
                       {...field}
                       value={displayValue}
                       onChange={(e) => {
-                        const val = e.target.value
-                        setDisplayValue(val.replace(/^https:\/\//, ''))
-                        field.onChange(e)
+                        const val = e.target.value;
+                        setDisplayValue(val.replace(/^https:\/\//, ""));
+                        field.onChange(e);
                       }}
                       onBlur={() => {
                         if (displayValue) {
                           // Make sure the value in the form is updated to include `https://`
-                          setValue('googleMapsLink', `https://${displayValue}`)
+                          setValue("googleMapsLink", `https://${displayValue}`);
                         }
                       }}
                       className={`w-full pl-16 px-3 py-2 border ${
                         errors.googleMapsLink
-                          ? 'border-red-500'
-                          : 'border-gray-600'
+                          ? "border-red-500"
+                          : "border-gray-600"
                       } bg-wwbg text-white focus:outline-none focus:border-red-500`}
                     />
                   )}
                 />
-                <span className='absolute top-0 left-0 pl-3 py-2 text-gray-500 bg-transparent'>
+                <span className="absolute top-0 left-0 pl-3 py-2 text-gray-500 bg-transparent">
                   https://
                 </span>
               </div>
               {errors.googleMapsLink && (
-                <p className='text-red-500 text-sm mt-1'>
+                <p className="text-red-500 text-sm mt-1">
                   {errors.googleMapsLink.message}
                 </p>
               )}
             </div>
-            <div className='flex flex-col md:flex-row justify-center mb-4 gap-4'>
+            <div className="flex flex-col md:flex-row justify-center mb-4 gap-4">
               {/* Max Occupants */}
-              <div className='w-full'>
+              <div className="w-full">
                 <label
-                  className='block text-sm font-medium mb-1 text-white'
-                  htmlFor='maxOccupants'
+                  className="block text-sm font-medium mb-1 text-white"
+                  htmlFor="maxOccupants"
                 >
-                  Max Customers<span className='text-red-500'>*</span>
+                  Max Customers<span className="text-red-500">*</span>
                 </label>
                 <Controller
-                  name='maxOccupants'
+                  name="maxOccupants"
                   control={control}
-                  defaultValue=''
+                  defaultValue=""
                   rules={{
-                    required: 'Maximum number of customers is required',
+                    required: "Maximum number of customers is required",
                     min: {
                       value: 1,
-                      message: 'Number of customers must be at least 1',
+                      message: "Number of customers must be at least 1",
                     },
                     max: {
                       value: 100,
-                      message: 'Number of customers must be below 100',
+                      message: "Number of customers must be below 100",
                     },
                     pattern: {
                       value: /^[0-9]+$/,
-                      message: 'Please enter a valid number',
+                      message: "Please enter a valid number",
                     },
                   }}
                   render={({ field }) => (
                     <input
                       {...field}
-                      placeholder='Enter maximum number'
-                      type='number'
-                      min='1'
+                      placeholder="Enter maximum number"
+                      type="number"
+                      min="1"
                       className={`w-full px-3 py-2 border ${
                         errors.maxOccupants
-                          ? 'border-red-500'
-                          : 'border-gray-600'
+                          ? "border-red-500"
+                          : "border-gray-600"
                       } bg-wwbg text-white focus:outline-none focus:border-red-500`}
                     />
                   )}
                 />
                 {errors.maxOccupants && (
-                  <p className='text-red-500 text-sm mt-1'>
+                  <p className="text-red-500 text-sm mt-1">
                     {errors.maxOccupants.message}
                   </p>
                 )}
               </div>
               {/* GST Number */}
-              <div className='w-full'>
+              <div className="w-full">
                 <label
-                  className='block text-sm font-medium mb-1 text-white'
-                  htmlFor='gstNumber'
+                  className="block text-sm font-medium mb-1 text-white"
+                  htmlFor="gstNumber"
                 >
-                  GST Number<span className='text-red-500'>*</span>
+                  GST Number<span className="text-red-500">*</span>
                 </label>
                 <Controller
-                  name='gstNumber'
+                  name="gstNumber"
                   control={control}
                   render={({ field }) => (
                     <input
                       {...field}
-                      placeholder='Enter maximum number'
-                      type='text'
-                      min='1'
+                      placeholder="Enter maximum number"
+                      type="text"
+                      min="1"
                       className={`w-full px-3 py-2 border ${
-                        errors.gstNumber ? 'border-red-500' : 'border-gray-600'
+                        errors.gstNumber ? "border-red-500" : "border-gray-600"
                       } bg-wwbg text-white focus:outline-none focus:border-red-500`}
                     />
                   )}
                 />
                 {errors.gstNumber && (
-                  <p className='text-red-500 text-sm mt-1'>
+                  <p className="text-red-500 text-sm mt-1">
                     {errors.gstNumber.message}
                   </p>
                 )}
               </div>
             </div>
             {/* Price */}
-            <div className='mb-4'>
+            <div className="mb-4">
               <label
-                className='block text-sm font-medium mb-1 text-white'
-                htmlFor='price'
+                className="block text-sm font-medium mb-1 text-white"
+                htmlFor="price"
               >
-                Price (per hour)<span className='text-red-500'>*</span>
+                Price (per hour)<span className="text-red-500">*</span>
               </label>
               <Controller
-                name='price'
+                name="price"
                 control={control}
                 defaultValue={PRICE.DEFAULT}
                 rules={{
                   min: {
                     value: 1,
-                    message: 'Price must be at least 1',
+                    message: "Price must be at least 1",
                   },
                   max: {
                     value: 500,
-                    message: 'Price cannot exceed 1000',
+                    message: "Price cannot exceed 1000",
                   },
                 }}
                 render={({ field: { onChange, value } }) => (
-                  <div className='flex flex-col items-center'>
+                  <div className="flex flex-col items-center">
                     <input
-                      type='range'
+                      type="range"
                       min={PRICE.MIN}
                       max={PRICE.MAX}
-                      step='1'
+                      step="1"
                       value={value}
                       onChange={(e) => {
-                        onChange(e.target.value)
-                        handleSliderChange(e)
+                        onChange(e.target.value);
+                        handleSliderChange(e);
                       }}
-                      className='w-full accent-red-600'
+                      className="w-full accent-red-600"
                     />
-                    <div className='flex items-center text-red-600 font-semibold mt-2'>
+                    <div className="flex items-center text-red-600 font-semibold mt-2">
                       <PiCurrencyInrLight size={16} />
                       {value}
                     </div>
@@ -572,7 +573,7 @@ const GymForm = ({ gymId = '66c06c22b3789c8442c0d273' }) => {
                 )}
               />
               {errors.price && (
-                <p className='text-red-500 text-sm mt-1'>
+                <p className="text-red-500 text-sm mt-1">
                   {errors.price.message}
                 </p>
               )}
@@ -580,62 +581,62 @@ const GymForm = ({ gymId = '66c06c22b3789c8442c0d273' }) => {
           </div>
 
           {/* Upload Images */}
-          <div className='space-y-4'>
-            <h3 className='text-2xl font-semibold mb-4 text-wwred'>
+          <div className="space-y-4">
+            <h3 className="text-2xl font-semibold mb-4 text-wwred">
               Upload Images
             </h3>
-            <p className='mb-2'>
+            <p className="mb-2">
               Add a minimum of four well-lit photographs of your gym.
             </p>
             <Controller
-              name='images'
+              name="images"
               control={control}
               defaultValue={[]}
               render={({ field: { onChange, value } }) => (
-                <div className='flex flex-wrap items-center justify-start gap-3 '>
+                <div className="flex flex-wrap items-center justify-start gap-3 ">
                   {value &&
                     value.length > 0 &&
                     value.map((img, idx) => (
                       <div
                         key={idx}
-                        className='relative w-28 h-28 bg-wwbg border border-gray-600'
+                        className="relative w-28 h-28 bg-wwbg border border-gray-600"
                       >
                         <img
                           src={
                             img instanceof File ? URL.createObjectURL(img) : img
                           }
                           alt={`Gym Photo ${idx + 1}`}
-                          className='h-full w-full object-cover'
+                          className="h-full w-full object-cover"
                         />
                         <button
-                          type='button'
-                          className='absolute top-0 right-2 bg-transparent'
+                          type="button"
+                          className="absolute top-0 right-2 bg-transparent"
                           onClick={() =>
                             handleRemoveImage(idx, onChange, value)
                           }
                         >
-                          <span className='text-red-500 font-medium text-lg'>
+                          <span className="text-red-500 font-medium text-lg">
                             x
                           </span>
                         </button>
                       </div>
                     ))}
                   <div
-                    className='relative w-28 h-28 bg-wwbg flex items-center justify-center border border-gray-600 cursor-pointer'
+                    className="relative w-28 h-28 bg-wwbg flex items-center justify-center border border-gray-600 cursor-pointer"
                     onClick={handleFileInputClick}
                   >
-                    <span className='text-red-500 text-3xl'>+</span>
+                    <span className="text-red-500 text-3xl">+</span>
                   </div>
                   <input
-                    type='file'
+                    type="file"
                     multiple
-                    accept='image/*'
+                    accept="image/*"
                     ref={fileInputRef}
                     onChange={(e) => {
-                      const files = Array.from(e.target.files)
-                      onChange([...value, ...files])
+                      const files = Array.from(e.target.files);
+                      onChange([...value, ...files]);
                     }}
-                    className='hidden'
+                    className="hidden"
                   />
                 </div>
               )}
@@ -643,54 +644,54 @@ const GymForm = ({ gymId = '66c06c22b3789c8442c0d273' }) => {
           </div>
 
           {/* Facilities */}
-          <div className='space-y-4'>
-            <h3 className='text-2xl font-semibold mb-4 text-wwred'>
+          <div className="space-y-4">
+            <h3 className="text-2xl font-semibold mb-4 text-wwred">
               Facilities
             </h3>
-            <p className='mb-2'>
+            <p className="mb-2">
               Select all of the facilities available at your gym
             </p>
-            <div className='grid sm:grid-cols-2 md:grid-cols-3 gap-4'>
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
               {FACILITIES.map((facility) => (
                 <label
                   key={facility}
-                  className='flex items-center cursor-pointer'
+                  className="flex items-center cursor-pointer"
                 >
                   <Controller
-                    name='facilities'
+                    name="facilities"
                     control={control}
                     defaultValue={[]}
                     render={({ field: { onChange, value } }) => (
                       <>
                         <div
-                          className='relative flex items-center justify-center w-6 h-6 md:w-8 md:h-8 bg-wwbg border cursor-pointer transition-all duration-300 ease-in-out border-gray-600'
+                          className="relative flex items-center justify-center w-6 h-6 md:w-8 md:h-8 bg-wwbg border cursor-pointer transition-all duration-300 ease-in-out border-gray-600"
                           onClick={() => {
                             const updatedFacilities = value.includes(facility)
                               ? value.filter((f) => f !== facility)
-                              : [...value, facility]
-                            onChange(updatedFacilities)
+                              : [...value, facility];
+                            onChange(updatedFacilities);
                           }}
                         >
                           {value.includes(facility) && (
-                            <span className='text-2xl absolute text-red-500'>
+                            <span className="text-2xl absolute text-red-500">
                               <svg
-                                xmlns='http://www.w3.org/2000/svg'
-                                className='h-6 w-6'
-                                fill='none'
-                                viewBox='0 0 24 24'
-                                stroke='currentColor'
-                                strokeWidth='2'
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-6 w-6"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                strokeWidth="2"
                               >
                                 <path
-                                  strokeLinecap='round'
-                                  strokeLinejoin='round'
-                                  d='M5 13l4 4L19 7'
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M5 13l4 4L19 7"
                                 />
                               </svg>
                             </span>
                           )}
                         </div>
-                        <span className='text-base ml-2 font-base text-white'>
+                        <span className="text-base ml-2 font-base text-white">
                           {facility}
                         </span>
                       </>
@@ -702,23 +703,23 @@ const GymForm = ({ gymId = '66c06c22b3789c8442c0d273' }) => {
           </div>
 
           {/* Buttons */}
-          <div className='flex justify-center space-x-2 mt-6 text-center'>
+          <div className="flex justify-center space-x-2 mt-6 text-center">
             <button
-              type='submit'
-              className='w-full md:w-40 px-4 bg-wwred py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+              type="submit"
+              className="w-full md:w-40 px-4 bg-wwred py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               disabled={isSubmitting}
             >
-              {isSubmitting ? 'Updating...' : 'Save'}
+              {isSubmitting ? "Updating..." : "Save"}
             </button>
           </div>
         </form>
       </div>
     </div>
-  )
-}
+  );
+};
 
-GymForm.propTypes = {
+Profile.propTypes = {
   gymId: PropTypes.string,
-}
+};
 
-export default GymForm
+export default Profile;

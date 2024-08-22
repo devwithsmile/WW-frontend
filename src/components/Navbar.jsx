@@ -104,7 +104,7 @@ const Navbar = () => {
         <ul
           className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-wwbg  ${
             isMenuOpen ? 'translate-y-0' : '-translate-y-full'
-          } nav-menu`}
+          } nav-menu lg:!hidden`}
         >
           <li className='nav-item'>
             <NavLink to='/home' onClick={closeMenu}>

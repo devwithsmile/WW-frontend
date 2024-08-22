@@ -1,11 +1,13 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 function WWButton({
   text,
+  name = "",
   variant = 'v1',
-  to = '#',
+  to,
   minWidth = '8rem',
   display = 'block',
   onClick
@@ -26,6 +28,7 @@ function WWButton({
         className={`${baseClass} ${variants[variant]}`}
         style={{ minWidth }}
         onClick={onClick}
+        name={name}
       >
         {text}
       </button>

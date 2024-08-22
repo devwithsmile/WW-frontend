@@ -52,7 +52,7 @@ function GymDetailsPage() {
             <div className='flex items-center space-x-1'>
               <FaStar className='text-red-500' />
               <span className='text-xs md:text-sm'>
-                {gymDetails.average_rating.toFixed(1)}
+              {(gymDetails.average_rating ?? 0).toFixed(1)}
               </span>
             </div>
           </div>

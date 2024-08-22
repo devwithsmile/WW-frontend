@@ -246,6 +246,14 @@ body {
   color: #f1f5f9 !important;
 }
 
+/* Style for elements with the class 'ant-picker-outlined' when focused */
+.ant-picker-outlined:focus,
+.ant-picker-outlined:focus-within {
+  background-color: transparent;
+}
+
+/* Toastify design */
+
 .Toastify__toast-icon svg {
   color: #ef4444 !important;
   fill: #ef4444 !important;
