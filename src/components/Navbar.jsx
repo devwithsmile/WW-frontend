@@ -8,11 +8,12 @@ import ProfileIcon from "./ProfileIcon.jsx";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-  const closeMenu = () => setIsMenuOpen(false);
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user, status, logout } = useAuth();
   const userProfileImage = user?.profile_image || false;
   const role = user?.role || false;
+
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const closeMenu = () => setIsMenuOpen(false);
 
   return (
     <header className="sticky border-b-2 header border-b-red-700 z-50">
@@ -59,41 +60,51 @@ const Navbar = () => {
                       Bookings
                     </NavLink>
                   </li>
+                  <li className="!py-1 flex items-center nav-item">
+                    <NavLink to="/users">
+                      <ProfileIcon
+                        imageUrl={userProfileImage}
+                        onClick={closeMenu}
+                      />
+                    </NavLink>
+                  </li>
                 </>
               )}
               {role === "owner" && (
                 <>
-                  <li className="nav-item !text-red-300">
-                    <NavLink to="/owners/gymForm" onClick={closeMenu}>
-                      Gym Form
-                    </NavLink>
-                  </li>
-                  <li className="nav-item">
-                    <NavLink to="/owners/accounts" onClick={closeMenu}>
-                      Accounts
-                    </NavLink>
-                  </li>
-                  <li className="nav-item">
-                    <NavLink to="/owners/dashboard" onClick={closeMenu}>
-                      Dashboard
-                    </NavLink>
-                  </li>
-                  <li className="nav-item">
-                    <NavLink to="/owners/slots" onClick={closeMenu}>
-                      Slots
-                    </NavLink>
-                  </li>
+                  {status === "active" ? (
+                    <>
+                      <li className="nav-item">
+                        <NavLink to="/owners/accounts" onClick={closeMenu}>
+                          Accounts
+                        </NavLink>
+                      </li>
+                      <li className="nav-item">
+                        <NavLink to="/owners/dashboard" onClick={closeMenu}>
+                          Dashboard
+                        </NavLink>
+                      </li>
+                      <li className="nav-item">
+                        <NavLink to="/owners/slots" onClick={closeMenu}>
+                          Slots
+                        </NavLink>
+                      </li>
+                    </>
+                  ) : status === "inactive" ? (
+                    <li className="nav-item">
+                      <NavLink to="/owners/status" onClick={closeMenu}>
+                        Status
+                      </NavLink>
+                    </li>
+                  ) : status === "new" ? (
+                    <li className="nav-item">
+                      <NavLink to="/owners/gymForm" onClick={closeMenu}>
+                        Gym Form
+                      </NavLink>
+                    </li>
+                  ) : null}
                 </>
               )}
-
-              <li className="!py-1 flex items-center nav-item">
-                <NavLink to="/users">
-                  <ProfileIcon
-                    imageUrl={userProfileImage}
-                    onClick={closeMenu}
-                  />
-                </NavLink>
-              </li>
               <li className="nav-item">
                 <Link
                   to="#"
@@ -165,41 +176,51 @@ const Navbar = () => {
                       Bookings
                     </NavLink>
                   </li>
+                  <li className="!py-1 flex items-center nav-item">
+                    <NavLink to="/users">
+                      <ProfileIcon
+                        imageUrl={userProfileImage}
+                        onClick={closeMenu}
+                      />
+                    </NavLink>
+                  </li>
                 </>
               )}
               {role === "owner" && (
                 <>
-                  <li className="nav-item !text-red-300">
-                    <NavLink to="/owners/gymForm" onClick={closeMenu}>
-                      Gym Form
-                    </NavLink>
-                  </li>
-                  <li className="nav-item">
-                    <NavLink to="/owners/accounts" onClick={closeMenu}>
-                      Accounts
-                    </NavLink>
-                  </li>
-                  <li className="nav-item">
-                    <NavLink to="/owners/dashboard" onClick={closeMenu}>
-                      Dashboard
-                    </NavLink>
-                  </li>
-                  <li className="nav-item">
-                    <NavLink to="/owners/slots" onClick={closeMenu}>
-                      Slots
-                    </NavLink>
-                  </li>
+                  {status === "active" ? (
+                    <>
+                      <li className="nav-item">
+                        <NavLink to="/owners/accounts" onClick={closeMenu}>
+                          Accounts
+                        </NavLink>
+                      </li>
+                      <li className="nav-item">
+                        <NavLink to="/owners/dashboard" onClick={closeMenu}>
+                          Dashboard
+                        </NavLink>
+                      </li>
+                      <li className="nav-item">
+                        <NavLink to="/owners/slots" onClick={closeMenu}>
+                          Slots
+                        </NavLink>
+                      </li>
+                    </>
+                  ) : status === "inactive" ? (
+                    <li className="nav-item">
+                      <NavLink to="/owners/status" onClick={closeMenu}>
+                        Status
+                      </NavLink>
+                    </li>
+                  ) : status === "new" ? (
+                    <li className="nav-item">
+                      <NavLink to="/owners/gymForm" onClick={closeMenu}>
+                        Gym Form
+                      </NavLink>
+                    </li>
+                  ) : null}
                 </>
               )}
-
-              <li className="!py-1 flex items-center nav-item">
-                <NavLink to="/users">
-                  <ProfileIcon
-                    imageUrl={userProfileImage}
-                    onClick={closeMenu}
-                  />
-                </NavLink>
-              </li>
               <li className="nav-item">
                 <Link
                   to="#"

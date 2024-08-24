@@ -18,7 +18,6 @@ const OwnerLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from || "/home"; // Get redirect location or provide fallback
 
   // Set focus when required field is not there
   useEffect(() => {
@@ -50,10 +49,22 @@ const OwnerLogin = () => {
       // Handle successful login
       if (response.status === 200) {
         toast.success(response.data.message);
-        login(response.data.token);
 
         console.log("Logged In data : ", response.data);
-        navigate("/owners/status");
+        const { status, reason } = response.data;
+        console.log(reason, status);
+
+        login(response.data.token, status);
+
+        if (status === "active") {
+          navigate("/owners/dashboard");
+        } else if (status === "inactive" || status === "rejected") {
+          navigate("/owners/status", {
+            state: { reason, status },
+          });
+        } else if (status === "new") {
+          navigate("/owners/gymForm");
+        }
       }
     } catch (error) {
       console.error("Error during login:", error);
@@ -151,12 +162,18 @@ const OwnerLogin = () => {
             </button>
           </form>
 
-          <p className="text-sm text-center mt-4">
+          <p className="text-sm text-center my-4">
             Don’t have an account?{" "}
             <Link to="/owners/register" className="text-red-500">
               Sign Up
             </Link>{" "}
             here
+          </p>
+
+          <p className="text-center">
+            <Link to="/forgotpassword" className="text-red-500 underline">
+              Forgot Password
+            </Link>
           </p>
         </div>
 
