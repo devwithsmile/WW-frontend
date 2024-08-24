@@ -175,7 +175,7 @@ function BookNow({ price, gym_id, schedule }) {
 
       if (response.status === 201) {
         toast.success('Booking successful')
-        setTimeout(() => navigate('/bookings'), 5000)
+        setTimeout(() => navigate('/payment'), 5000)
       }
     } catch (error) {
       if (error.response && error.response.data.errors) {

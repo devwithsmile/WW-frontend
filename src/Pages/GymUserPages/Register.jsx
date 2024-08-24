@@ -65,8 +65,8 @@ const Register = () => {
     } catch (error) {
       console.error("Error during registration:", error);
 
-      if (error.response && error.response.data.errors) {
-        const { errors } = error.response.data;
+      if (error.response && error.response.data) {
+        const errors = error.response.data;
 
         if (errors.global) {
           toast.error(errors.global);

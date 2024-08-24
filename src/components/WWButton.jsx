@@ -19,7 +19,7 @@ function WWButton({
     v1: `bg-wwred hover:bg-red-600 focus-visible:outline-indigo-600 ${commonClass}`,
     v2: `bg-red-700 border border-red-300 hover:bg-red-800 text-slate-100 ${commonClass}`,
     v3: `bg-transparent text-white border border-wwred hover:bg-wwred ${commonClass}`,
-    v4: `bg-black text-wwred border border-red-500 hover:bg-red-600 hover:text-white rounded-md ${commonClass}`,
+    v4: `bg-black text-wwred border border-red-500 hover:bg-red-600 hover:text-white ${commonClass}`,
   };
 
   return (

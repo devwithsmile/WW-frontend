@@ -53,13 +53,13 @@ const OwnerLogin = () => {
         login(response.data.token);
 
         console.log("Logged In data : ", response.data);
-        navigate(from, { replace: true });
+        navigate("/owners/status");
       }
     } catch (error) {
       console.error("Error during login:", error);
 
-      if (error.response && error.response.data.errors) {
-        const { errors } = error.response.data;
+      if (error.response && error.response.data) {
+        const errors = error.response.data;
 
         if (errors.global) {
           toast.error(errors.global);

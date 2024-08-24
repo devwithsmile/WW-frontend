@@ -1,71 +1,68 @@
-import React, { useState } from 'react'
-import { toast } from 'react-toastify'
-import GymForm1 from '../../components/GymForm/GymForm1'
-import GymForm2 from '../../components/GymForm/GymForm2'
-import api from '../../api/axios.js'
-
+import React, { useState } from 'react';
+import { toast } from 'react-toastify';
+import GymForm1 from '../../components/GymForm/GymForm1';
+import GymForm2 from '../../components/GymForm/GymForm2';
+import api from '../../api/axios.js';
 
 const GymForm = () => {
-  // State to track which form is currently displayed
-  const [currentForm, setCurrentForm] = useState('form1')
-  const [formData1, setFormData1] = useState({})
-  const [formData2, setFormData2] = useState({})
+  const [currentForm, setCurrentForm] = useState('form1');
+  const [formData1, setFormData1] = useState({});
+  const [formData2, setFormData2] = useState({});
 
-  // Function to handle form submission and transition to next form
   const handleForm1Submit = (data) => {
-    setFormData1(data) // Store form1 data
-    setCurrentForm('form2') // Transition to form2
-  }
+    setFormData1(data);
+    setCurrentForm('form2');
+  };
 
-  // Function to handle form2 submission
   const handleForm2Submit = async (data) => {
-    setFormData2(data) // Store form2 data
+    setFormData2(data);
 
     try {
-      // Combine formData from form1 with form2 data
-      // Create a new FormData instance
       const formData = new FormData();
-      // Append data from formData1 to FormData
+
       for (const [key, value] of Object.entries(formData1)) {
         formData.append(key, value);
       }
 
-      // Append data from form2 to FormData
       for (const [key, value] of Object.entries(data)) {
-        formData.append(key, value);
+        if (key === 'images' && Array.isArray(value)) {
+          // Append each image file individually under the same "images" key
+          value.forEach((file) => {
+            formData.append('images', file);
+          });
+        } else {
+          formData.append(key, value);
+        }
       }
 
-
-      // Iterate over FormData entries and log them
+      // Debugging: Log FormData entries
       for (const [key, value] of formData.entries()) {
         if (key === 'images') {
-          // Handle and log image file details separately
           console.log('Images:');
-          for (const file of value) {
-            console.log(`File name: ${file.name}, File size: ${file.size}`);
+          if (value instanceof File) {
+            console.log(`File name: ${value.name}, File size: ${value.size}`);
           }
         } else {
-          // Log other form data entries
           console.log(`${key}: ${value}`);
         }
       }
 
+      const response = await api.post(`/gyms`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
 
-      const response = (await api.post(`/gyms`, formData, { headers: { 'Content-Type': 'multipart/form-data' } }));
-
-      console.log("response : " + response.data);
-
-      toast.success('Your details saved successfully')
+      console.log('Response:', response.data);
+      toast.success('Your details were saved successfully');
     } catch (error) {
-      toast.error('Failed to save details')
+      console.error('Error uploading data:', error);
+      toast.error('Failed to save details');
     }
-  }
+  };
 
-  // Function to handle navigation back to form1
   const handlePrevious = (data) => {
-    setFormData2(data)
-    setCurrentForm('form1') // Transition back to form1
-  }
+    setFormData2(data);
+    setCurrentForm('form1');
+  };
 
   return (
     <div>
@@ -80,7 +77,7 @@ const GymForm = () => {
         />
       )}
     </div>
-  )
-}
+  );
+};
 
-export default GymForm
+export default GymForm;

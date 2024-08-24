@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        wwbg: '#212121',
+        wwbg: '#171717',
         wwtext: '#F5F7F8',
         wwsecondarytext:'#94a3b8',
         wwred : '#c13838',

@@ -14,15 +14,6 @@ function Bookings() {
   const [error, setError] = useState(null);
   const { isAuthenticated } = useAuth();
 
-  const todayPagination = usePagination({
-    activePage: 1,
-    recordsPerPage: 5,
-    totalRecordsLength: todayBookings.length,
-    navCustomPageSteps: { prev: 1, next: 1 },
-    offset: 2,
-    permanentFirstNumber: true,
-    permanentLastNumber: true,
-  });
 
   const pastPagination = usePagination({
     activePage: 1,
@@ -48,29 +39,30 @@ function Bookings() {
     const fetchBookings = async () => {
       try {
         const response = await api.get(`/users/bookings`);
-
+        
         const bookings = response.data.bookingsWithGymName;
+        console.log(bookings);
 
         if (bookings.length > 0) {
           const today = new Date();
           today.setHours(0, 0, 0, 0); // Set today's time to 00:00:00 for accurate comparison
 
           const todayBookings = bookings.filter((booking) => {
-            const bookingDate = moment(booking.date, "DD/MM/YYYY").startOf(
+            const bookingDate = moment(booking.date, "DD-MM-YYYY").startOf(
               "day"
             );
             return bookingDate.isSame(today, "day");
           });
 
           const pastBookings = bookings.filter((booking) => {
-            const bookingDate = moment(booking.date, "DD/MM/YYYY").startOf(
+            const bookingDate = moment(booking.date, "DD-MM-YYYY").startOf(
               "day"
             );
             return bookingDate.isBefore(today, "day");
           });
 
           const futureBookings = bookings.filter((booking) => {
-            const bookingDate = moment(booking.date, "DD/MM/YYYY").startOf(
+            const bookingDate = moment(booking.date, "DD-MM-YYYY").startOf(
               "day"
             );
             return bookingDate.isAfter(today, "day");
@@ -78,8 +70,8 @@ function Bookings() {
           
 
           setTodayBookings(todayBookings);
-
-          console.log(todayBookings[0]._id);
+          
+          console.log(todayBookings[0]?._id);
           setPastBookings(pastBookings);
           setFutureBookings(futureBookings);
         } else {
@@ -87,6 +79,8 @@ function Bookings() {
         }
       } catch (err) {
         setError("Failed to fetch bookings.");
+        console.log(err);
+        
       } finally {
         setLoading(false);
       }

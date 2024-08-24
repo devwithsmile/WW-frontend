@@ -29,11 +29,14 @@ function TodaysBookingSection({ todayBookings = [] }) {
   useEffect(() => {
     if (todayBookings.length > 0) {
       const todayDate = moment().format("DD/MM/YYYY"); // Replace '/' with '-' for the API call
-
+      console.log(todayDate);
+      
       api
         .get(`users/bookings/images?date=${todayDate}`)
         .then((response) => {
-          setGymImage(response.data[0].image_urls[0]);
+          console.log(response);
+          
+          setGymImage(response.data.bookingsWithImages[0].image_urls[0]);
         })
         .catch((error) => {
           console.error("Error fetching gym image:", error);
@@ -193,7 +196,7 @@ function TodaysBookingSection({ todayBookings = [] }) {
                   className="bg-wwbg text-white p-4 mt-5 shadow-lg border-[0.0001rem] border-gray-700  space-y-4 absolute ml-[15px] md:ml-[-60px] z-50"
                 >
                   <div className="text-center">
-                    <label className="text-red-500 font-bold text-lg">
+                    <label className="text-lg font-bold text-red-500">
                       Duration
                     </label>
                   </div>

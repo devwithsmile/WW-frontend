@@ -5,7 +5,7 @@ import PublicRoute from "./components/routes/PublicRoute";
 import Layout from "./components/Layout";
 import LandingPage from "./Pages/GymUserPages/LandingPage";
 import Home from "./Pages/GymUserPages/Home";
-import SearchPage from "./Pages/GymUserPages/SearchPage";
+import Search from "./Pages/GymUserPages/Search";
 import Bookings from "./Pages/GymUserPages/Bookings";
 import Login from "./Pages/GymUserPages/Login";
 import Register from "./Pages/GymUserPages/Register";
@@ -20,21 +20,13 @@ import ForgotPasswordForm from "./Pages/ResetPassword/ForgotPassword";
 import ResetPassword from "./Pages/ResetPassword/ResetPassword";
 import SlotPage from "./Pages/GymOwnerPages/SlotPage";
 import OwnerDashboard from "./Pages/GymOwnerPages/OwnerDashboard";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import NotAuthorized from "./Pages/Error/NotAuthorized";
+import ApprovalStatus from "./Pages/GymOwnerPages/ApprovalStatus";
+import Payment from "./Pages/GymUserPages/Payment";
 
 // Main application component
 function App() {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        // Add your default query options here
-        refetchOnWindowFocus: false,
-      },
-    },
-  });
-
   return (
-    <QueryClientProvider client={queryClient}>
     <Routes>
       <Route
         path="*"
@@ -48,12 +40,25 @@ function App() {
               />
               <Route
                 path="/home"
-                element={<PrivateRoute element={<Home />} />}
+                element={
+                  <PrivateRoute element={<Home />} allowedRoles="customer" />
+                }
               />
-              <Route path="/search" element={<SearchPage />} />
+              <Route path="/search" element={<Search />} />
               <Route
                 path="/bookings"
-                element={<PrivateRoute element={<Bookings />} />}
+                element={
+                  <PrivateRoute
+                    element={<Bookings />}
+                    allowedRoles="customer"
+                  />
+                }
+              />
+              <Route
+                path="/payment"
+                element={
+                  <PrivateRoute element={<Payment />} allowedRoles="customer" />
+                }
               />
               <Route
                 path="/login"
@@ -66,7 +71,9 @@ function App() {
               <Route path="/gym/:id" element={<GymDetails />} />
               <Route
                 path="/users"
-                element={<PrivateRoute element={<Profile />} />}
+                element={
+                  <PrivateRoute element={<Profile />} allowedRoles="customer" />
+                }
               />
               {/* Reset/Forgot Password */}
               <Route path="/forgotpassword" element={<ForgotPasswordForm />} />
@@ -80,18 +87,53 @@ function App() {
                 path="/owners/login"
                 element={<PublicRoute element={<OwnerLogin />} />}
               />
-              <Route path="/owners/gymForm" element={<GymForm />} />
-              <Route path="/owners/accounts" element={<OwnerProfile />} />
-              <Route path="/owners/slots" element={<SlotPage />} />
-              <Route path="/owners/dashboard" element={<OwnerDashboard />} />
+              <Route
+                path="/owners/gymForm"
+                element={
+                  <PrivateRoute element={<GymForm />} allowedRoles="owner" />
+                }
+              />
+              <Route
+                path="/owners/accounts"
+                element={
+                  <PrivateRoute
+                    element={<OwnerProfile />}
+                    allowedRoles="owner"
+                  />
+                }
+              />
+              <Route
+                path="/owners/slots"
+                element={
+                  <PrivateRoute element={<SlotPage />} allowedRoles="owner" />
+                }
+              />
+              <Route
+                path="/owners/dashboard"
+                element={
+                  <PrivateRoute
+                    element={<OwnerDashboard />}
+                    allowedRoles="owner"
+                  />
+                }
+              />
+              <Route
+                path="/owners/status"
+                element={
+                  <PrivateRoute
+                    element={<ApprovalStatus />}
+                    allowedRoles="owner"
+                  />
+                }
+              />
               {/* Error Routes */}
+              <Route path="/not-authorized" element={<NotAuthorized />} />
               <Route path="*" element={<PageNotFound />} />
             </Routes>
           </Layout>
         }
       />
     </Routes>
-    </QueryClientProvider>
   );
 }
 
