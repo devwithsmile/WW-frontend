@@ -47,23 +47,26 @@ function BookNow({ price, gym_id, schedule }) {
 
   // Function to update available slots based on selected date/day
   const updateAvailableSlots = (date) => {
-    const dayName = dayjs(date).format('dddd')
-    const availableSlots = schedule.slots[dayName] || []
+    // Ensure schedule and slots are present
+    const dayName = dayjs(date).format('dddd');
+    const availableSlots = schedule?.slots?.[dayName] ?? []; // Safely access schedule and slots
 
-    setSlots(availableSlots)
+    console.log(availableSlots);
+
+    setSlots(availableSlots);
 
     if (availableSlots.length > 0) {
-      const [slotFrom, slotTo] = availableSlots[0].from.split(' - ')
-      const times = generateAvailableTimes(slotFrom, slotTo)
-      setValue('time', times[0]) // default to the first available time
-      setValue('slot', `${availableSlots[0].from} - ${availableSlots[0].to}`) // default slot
+      const [slotFrom, slotTo] = availableSlots[0].from.split(' - ');
+      const times = generateAvailableTimes(slotFrom, slotTo);
+      setValue('time', times[0]); // Default to the first available time
+      setValue('slot', `${availableSlots[0].from} - ${availableSlots[0].to}`); // Default slot
     } else {
-      setValue('time', '')
-      setValue('slot', '')
+      setValue('time', ''); // Reset time if no slots are available
+      setValue('slot', ''); // Reset slot if no slots are available
     }
 
-    return availableSlots
-  }
+    return availableSlots;
+  };
 
   // Function to generate available times
   const generateAvailableTimes = (slotFrom, slotTo) => {
@@ -169,13 +172,13 @@ function BookNow({ price, gym_id, schedule }) {
         date: date,
         from: fromTime.format(format),
         to: toTime.format(format),
-        totalPrice: (price * duration).toFixed(2),
-        gym_id: gym_id || '66c06c22b3789c8442c0d26a',
+        totalPrice: (price/60 * duration).toFixed(2),
+        gym_id: gym_id || '66c9bebd50f64d1ee0b4ac2e',
       })
 
       if (response.status === 201) {
         toast.success('Booking successful')
-        setTimeout(() => navigate('/payment'), 5000)
+        setTimeout(() => navigate('/payment'), 1500)
       }
     } catch (error) {
       if (error.response && error.response.data.errors) {
@@ -213,7 +216,7 @@ function BookNow({ price, gym_id, schedule }) {
       </div>
 
       {/* Slots */}
-      {slots.length > 0 && (
+      {slots.length > 0 ? (
         <div className='flex flex-col mb-6 lg:mb-0'>
           <label className='mb-1 text-sm font-medium'>Select Slot:</label>
           <Controller
@@ -234,8 +237,11 @@ function BookNow({ price, gym_id, schedule }) {
             )}
           />
         </div>
+      ) : (
+        <div className='flex flex-col mb-6 lg:mb-0'>
+          <label className='mb-1 text-sm font-medium'>No Slots Available. Please select a different date.</label>
+        </div>
       )}
-
       {/* Time */}
       {slots.length > 0 && (
         <div className='flex-col mb-6 lg:mb-0'>

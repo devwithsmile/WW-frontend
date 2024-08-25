@@ -28,8 +28,7 @@ const FACILITIES = [
 ];
 
 const states = dataStates;
-const Profile = ({ gymId = "66c06c22b3789c8442c0d273" }) => {
-  // TODO: connect gymID for the owner
+const Profile = () => {
   const {
     control,
     handleSubmit,
@@ -41,9 +40,8 @@ const Profile = ({ gymId = "66c06c22b3789c8442c0d273" }) => {
     formState: { isSubmitting, errors },
   } = useForm();
   const [initialValues, setInitialValues] = useState([]);
-
-  const fileInputRef = useRef(null);
   const [displayValue, setDisplayValue] = useState("");
+  const fileInputRef = useRef(null);
 
   // Watch fields
   const watchFacilities = watch("facilities", []);
@@ -54,13 +52,15 @@ const Profile = ({ gymId = "66c06c22b3789c8442c0d273" }) => {
   useEffect(() => {
     const fetchGymDetails = async () => {
       try {
-        const response = await api.get(`/gyms/${gymId}`);
+        const response = await api.get(`/users/owners`);
         if (response.status === 200) {
           const gymData = response.data;
-          //   console.log('Fetched gym data:', gymData)
+          // console.log("Fetched gym data:", gymData.map_detail);
 
           // Google Map Link
-          const googleMapsLink = `https://www.google.com/maps?q=${gymData.map_detail?.latitude},${gymData.map_detail?.longitude}`;
+          // const googleMapsLink = `https://maps.google.com/maps?q=${gymData.map_detail?.coordinates[1]},${gymData.map_detail?.coordinates[0]}`;
+
+          // console.log(googleMapsLink);
 
           // Use reset to initialize or update form values
           reset({
@@ -69,13 +69,13 @@ const Profile = ({ gymId = "66c06c22b3789c8442c0d273" }) => {
             addressLine1: gymData.address?.address_line_1 || "",
             addressLine2: gymData.address?.address_line_2 || "",
             city: gymData.address?.city || "",
-            state: gymData.address?.state || "",
+            state: gymData.address?.state || "", // TODO: state is not showing the data
             pincode: gymData.address?.pincode || "",
             price: gymData.price || "",
             maxOccupants: gymData.total_occupancy || "",
             gstNumber: gymData.gst_number || "",
             facilities: gymData.facilities || [],
-            googleMapsLink: googleMapsLink || "",
+            // googleMapsLink: googleMapsLink || "",
             // TODO: TypeError: Failed to execute 'createObjectURL' on 'URL': Overload resolution failed.
             images: gymData.images || [],
           });
@@ -87,7 +87,7 @@ const Profile = ({ gymId = "66c06c22b3789c8442c0d273" }) => {
     };
 
     fetchGymDetails();
-  }, [gymId, reset]);
+  }, [reset]);
 
   // Set focus when required field is not there
   useEffect(() => {
@@ -149,7 +149,7 @@ const Profile = ({ gymId = "66c06c22b3789c8442c0d273" }) => {
 
       //   console.log('updatedFields gym data:', updatedFields)
 
-      const response = await api.patch(`/gyms/${initialValues._id}`, data, {
+      const response = await api.patch(`/gyms`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -159,7 +159,7 @@ const Profile = ({ gymId = "66c06c22b3789c8442c0d273" }) => {
       }
 
       //   if (Object.keys(updatedFields).length > 0) {
-      // const response = await api.patch(`/gyms/${initialValues._id}`, data, {
+      // const response = await api.patch(`/gyms`, data, {
       //   headers: { 'Content-Type': 'multipart/form-data' },
       // })
       // if (response.status === 200) {
@@ -422,6 +422,7 @@ const Profile = ({ gymId = "66c06c22b3789c8442c0d273" }) => {
                     <input
                       {...field}
                       value={displayValue}
+                      placeholder="maps.google.com/maps/4Zmd31STWKRtpko96"
                       onChange={(e) => {
                         const val = e.target.value;
                         setDisplayValue(val.replace(/^https:\/\//, ""));
@@ -716,10 +717,6 @@ const Profile = ({ gymId = "66c06c22b3789c8442c0d273" }) => {
       </div>
     </div>
   );
-};
-
-Profile.propTypes = {
-  gymId: PropTypes.string,
 };
 
 export default Profile;

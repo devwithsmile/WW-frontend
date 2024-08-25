@@ -24,9 +24,9 @@ function Facilities({ facilities }) {
   }
 
   return (
-    <div className='w-auto p-4 md:p-8 shadow-lg'>
-      <div className='font-bold text-white mb-4'>Facilities</div>
-      <div className='grid sm:grid-cols-2 gap-y-2 text-gray-300'>
+    <div className='w-auto p-4 shadow-lg md:p-8'>
+      <div className='mb-4 font-bold text-white'>Facilities</div>
+      <div className='grid text-gray-300 sm:grid-cols-2 gap-y-2'>
         {facilities.map((facility) => {
           const facilityData = availableFacilities[facility.toLowerCase()]
           if (!facilityData) return null

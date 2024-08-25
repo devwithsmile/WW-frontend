@@ -10,7 +10,7 @@ const PrivateRoute = ({ element, allowedRoles }) => {
   const token = getAuthToken();
 
   if (!token) {
-    toast.error("Please login to access the page"); // TODO:
+    // toast.error("Please login to access the page");
 
     // If no token, redirect to owner login
     if (allowedRoles === "owner") {

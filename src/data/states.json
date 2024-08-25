@@ -1,5 +1,9 @@
 [
   {
+    "code": "AN",
+    "name": "Andaman and Nicobar Islands"
+  },
+  {
     "code": "AP",
     "name": "Andhra Pradesh"
   },
@@ -20,6 +24,18 @@
     "name": "Chhattisgarh"
   },
   {
+    "code": "CH",
+    "name": "Chandigarh"
+  },
+  {
+    "code": "DN",
+    "name": "Dadra and Nagar Haveli and Daman and Diu"
+  },
+  {
+    "code": "DL",
+    "name": "Delhi"
+  },
+  {
     "code": "GA",
     "name": "Goa"
   },
@@ -36,7 +52,7 @@
     "name": "Himachal Pradesh"
   },
   {
-    "code": "JL",
+    "code": "JK",
     "name": "Jammu and Kashmir"
   },
   {
@@ -52,6 +68,14 @@
     "name": "Kerala"
   },
   {
+    "code": "LA",
+    "name": "Ladakh"
+  },
+  {
+    "code": "LD",
+    "name": "Lakshadweep"
+  },
+  {
     "code": "MP",
     "name": "Madhya Pradesh"
   },
@@ -64,7 +88,7 @@
     "name": "Manipur"
   },
   {
-    "code": "ME",
+    "code": "ML",
     "name": "Meghalaya"
   },
   {
@@ -100,7 +124,7 @@
     "name": "Tamil Nadu"
   },
   {
-    "code": "TS",
+    "code": "TG",
     "name": "Telangana"
   },
   {
@@ -112,7 +136,7 @@
     "name": "Uttar Pradesh"
   },
   {
-    "code": "UT",
+    "code": "UK",
     "name": "Uttarakhand"
   },
   {

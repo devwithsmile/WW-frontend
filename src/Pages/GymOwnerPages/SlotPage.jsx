@@ -162,7 +162,7 @@ const Slot = () => {
           {daysOfWeek.map((day, index) => (
             <div key={day} className="flex flex-col space-y-2 md:flex-row my-2">
               {/* Check box */}
-              <div className="w-full flex items-center my-6 md:hidden">
+              <div className="w-full flex items-center my-6 md:!hidden">
                 <div className="flex-grow border-t border-red-600"></div>
                 <span className="mx-4 text-white-400">{day}</span>
                 <div className="flex-grow border-t border-red-600"></div>
@@ -181,7 +181,7 @@ const Slot = () => {
                     />
                     <label
                       htmlFor={day}
-                      className="w-24 hidden text-base text-white md:block"
+                      className="w-24 hidden text-base text-white md:!block"
                     >
                       {day}
                     </label>

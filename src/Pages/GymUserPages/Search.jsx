@@ -10,6 +10,28 @@ const Search = () => {
   const [displayedGyms, setDisplayedGyms] = useState([]);
   const [location, setLocation] = useState("");
   const [search, setSearch] = useState("");
+  const [coordinates, setCoordinates] = useState({ latitude: null, longitude: null });
+  const [error, setError] = useState(null);
+
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setCoordinates({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+        setError(null);
+      },
+      (error) => {
+        setError(error.message);
+      }
+    );
+  } else {
+    setError('Geolocation is not supported by this browser.');
+  }
+
+
   const [filters, setFilters] = useState({
     distance: "",
     price: "",
@@ -22,21 +44,29 @@ const Search = () => {
     triggerOnce: false,
   });
 
+  const params = {
+    city: location,
+    sort_by: sort, // Update to match the API sorting parameter
+
+  }
+  if (!location) {
+    params.latitude = coordinates.latitude ?? 18.630614;
+    params.longitude = coordinates.longitude ?? 73.8152839;
+  }
+
+
   const { data, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteQuery({
       queryKey: ["gyms", search, filters, location, sort],
+
       queryFn: async ({ pageParam = 1 }) => {
-        const res = await api.get("/gyms", {
-          params: {
-            page: pageParam,
-            search,
-            location,
-            ...filters,
-            sort_by: sort, // Update to match the API sorting parameter
-          },
-        });
+        const res = await api.get("/gyms", { params: params });
+        console.log(res);
+
         return res.data;
       },
+
+
       getNextPageParam: (lastPage) => {
         if (lastPage.page < lastPage.totalPages) {
           return lastPage.page + 1;

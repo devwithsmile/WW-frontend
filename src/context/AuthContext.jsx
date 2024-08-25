@@ -20,20 +20,31 @@ export const AuthProvider = ({ children }) => {
       // console.log('Decoded User: ', decodedUser.payload)
       setIsAuthenticated(token);
       setUser(decodedUser.payload);
+
+      // setting owner account status
+      if (decodedUser.payload.role == "owner") {
+        const userStatus = localStorage.getItem("status");
+        setStatus(userStatus);
+      }
     }
   }, [isAuthenticated]);
 
-  const login = (token, userStatus = null) => {
+  const login = (token, userStatus) => {
     localStorage.setItem("auth_token", token);
     setIsAuthenticated(token);
     const decodedUser = jwtDecode(token);
     // console.log('Decoded User: ', decodedUser.payload)
     setUser(decodedUser.payload);
-    setStatus(userStatus);
+    // setting owner account status
+    if (decodedUser.payload.role == "owner") {
+      localStorage.setItem("status", userStatus);
+      setStatus(userStatus);
+    }
   };
 
   const logout = () => {
     localStorage.removeItem("auth_token");
+    localStorage.removeItem("status");
     setUser(null);
     setStatus(null);
     setIsAuthenticated(false);

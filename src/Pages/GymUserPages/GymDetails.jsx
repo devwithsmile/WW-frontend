@@ -43,16 +43,16 @@ function GymDetailsPage() {
       <div className='mx-10 md:mx-16'>
         <div className='flex flex-col items-center justify-center md:items-start'>
           <h1 className='text-xl font-bold text-white md:text-2xl'>
-            {gymDetails.gym_name}
+            {gymDetails.gym_name ?? "GYM NAME"}
           </h1>
           <div className='flex items-center mt-2 space-x-2 text-gray-300 md:space-x-2 md:mt-0'>
             <span className='text-xs md:text-sm'>
-              {gymDetails.address.city}, {gymDetails.address.state}
+              {gymDetails.address.city ?? "CITY"}, {gymDetails.address.state ?? "STATE"}
             </span>
             <div className='flex items-center space-x-1'>
               <FaStar className='text-red-500' />
               <span className='text-xs md:text-sm'>
-              {(gymDetails.average_rating ?? 0).toFixed(1)}
+                {(gymDetails.average_rating ?? 0).toFixed(1)}
               </span>
             </div>
           </div>
@@ -62,26 +62,26 @@ function GymDetailsPage() {
       <div className='flex flex-col lg:flex-row'>
         {/* section 1 */}
         <section className='px-6 lg:w-2/3'>
-          <Carousel images={gymDetails.images} />
-          <AboutSection desc={gymDetails.description} />
+          <Carousel images={gymDetails.images ?? []} />
+          <AboutSection desc={gymDetails.description ?? "DESCRIPTION HERE..."} />
         </section>
         {/* section 2 */}
         <section className='px-6 space-y-4 lg:w-1/3'>
           <BookNow
-            price={gymDetails.price}
-            gym_id={gymDetails.gym_id}
-            schedule={gymDetails.schedule}
+            price={gymDetails.price ?? 19}
+            gym_id={id ?? "66c9a765d76ca5af637c223b"}
+            schedule={gymDetails.schedule ?? []}
           />
-          <Facilities facilities={gymDetails.facilities} />
+          <Facilities facilities={gymDetails.facilities ?? []} />
           <CurrentLocationMap
             location={{
-              lat: gymDetails.map_detail.latitude,
-              lng: gymDetails.map_detail.longitude,
+              lat: gymDetails.map_detail.coordinates[1],
+              lng: gymDetails.map_detail.coordinates[0],
             }}
           />
           <ContactGYM
-            email={gymDetails.owner_id.email}
-            phone={gymDetails.owner_id.phone_number}
+            email={gymDetails.owner_id.email ?? "email@email.com"}
+            phone={gymDetails.owner_id.phone_number ?? 7900000000}
           />
         </section>
       </div>
