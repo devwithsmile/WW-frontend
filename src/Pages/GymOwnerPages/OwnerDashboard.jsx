@@ -215,6 +215,12 @@ const OwnerDashboard = () => {
           </div>
         </section>
 
+        {extensionRequests.length === 0 && upcomingBookings.length === 0 && (
+          <div className="flex items-center justify-center text-center p-6 min-h-64 bg-wwpopdiv shadow-lg w-full mb-6">
+            <p className="text-lg text-wwtext">No bookings to show</p>
+          </div>
+        )}
+
         {/* extends session requests table with buttons to approve or deny */}
         <div className="extends">
           {/* <TableComponent /> */}

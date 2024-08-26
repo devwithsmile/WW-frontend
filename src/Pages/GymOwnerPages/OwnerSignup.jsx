@@ -137,49 +137,56 @@ const OwnerSignup = () => {
               >
                 Password
               </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  id="password"
-                  autoComplete="new-password"
-                  placeholder="**************"
-                  {...register("password", {
-                    required: "Password is required",
-                    minLength: {
-                      value: 8,
-                      message: "Password must be at least 8 characters long",
-                    },
-                    validate: {
-                      hasUppercase: (value) =>
-                        /[A-Z]/.test(value) ||
-                        "Password must include at least one uppercase letter",
-                      hasLowercase: (value) =>
-                        /[a-z]/.test(value) ||
-                        "Password must include at least one lowercase letter",
-                      hasNumber: (value) =>
-                        /[0-9]/.test(value) ||
-                        "Password must include at least one number",
-                      hasSpecialChar: (value) =>
-                        /[!@#$%^&*(),.?":{}|<>]/.test(value) ||
-                        "Password must include at least one special character",
-                    },
-                  })}
-                  className={`w-full px-3 py-2 border ${
-                    errors.password ? "border-red-500" : "border-gray-600"
-                  } bg-wwbg text-white focus:outline-none focus:border-red-500`}
-                />
+              <div>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    autoComplete="new-password"
+                    placeholder="**************"
+                    {...register("password", {
+                      required: "Password is required",
+                      minLength: {
+                        value: 8,
+                        message: "Password must be at least 8 characters long",
+                      },
+                      validate: {
+                        hasUppercase: (value) =>
+                          /[A-Z]/.test(value) ||
+                          "Password must include at least one uppercase letter",
+                        hasLowercase: (value) =>
+                          /[a-z]/.test(value) ||
+                          "Password must include at least one lowercase letter",
+                        hasNumber: (value) =>
+                          /[0-9]/.test(value) ||
+                          "Password must include at least one number",
+                        hasSpecialChar: (value) =>
+                          /[!@#$%^&*(),.?":{}|<>]/.test(value) ||
+                          "Password must include at least one special character",
+                      },
+                    })}
+                    className={`w-full px-3 py-2 border ${
+                      errors.password ? "border-red-500" : "border-gray-600"
+                    } bg-wwbg text-white focus:outline-none focus:border-red-500`}
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500"
+                  >
+                    {showPassword ? (
+                      <AiOutlineEye />
+                    ) : (
+                      <AiOutlineEyeInvisible />
+                    )}
+                  </button>
+                </div>
                 {errors.password && (
                   <p className="text-red-500 text-sm mt-1">
                     {errors.password.message}
                   </p>
                 )}
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500"
-                >
-                  {showPassword ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
-                </button>
               </div>
             </div>
 

@@ -30,12 +30,12 @@ function TodaysBookingSection({ todayBookings = [] }) {
     if (todayBookings.length > 0) {
       const todayDate = moment().format("DD/MM/YYYY"); // Replace '/' with '-' for the API call
       console.log(todayDate);
-      
+
       api
         .get(`users/bookings/images?date=${todayDate}`)
         .then((response) => {
           console.log(response);
-          
+
           setGymImage(response.data.bookingsWithImages[0].image_urls[0]);
         })
         .catch((error) => {
@@ -58,7 +58,13 @@ function TodaysBookingSection({ todayBookings = [] }) {
   }, []);
 
   if (todayBookings.length === 0) {
-    return <p className="text-center text-gray-500">No bookings for today.</p>;
+    return (
+      <div className="flex items-center justify-center mb-6">
+        <div className="text-center p-6 bg-wwpopdiv shadow-lg w-full md:mx-3">
+          <p className="text-lg text-wwtext">No bookings for today.</p>
+        </div>
+      </div>
+    );
   }
 
   function formatDate(inputDate) {

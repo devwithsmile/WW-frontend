@@ -121,7 +121,7 @@ const GymForm2 = ({ onSubmit, initialData, onPrevious }) => {
                     {...field}
                     placeholder="Description"
                     className={`w-full px-3 py-2 h-28 border ${
-                      errors.addressLine1 ? "border-red-500" : "border-gray-600"
+                      errors.description ? "border-red-500" : "border-gray-600"
                     } bg-wwbg text-white focus:outline-none focus:border-red-500`}
                   />
                 )}
@@ -339,7 +339,6 @@ const GymForm2 = ({ onSubmit, initialData, onPrevious }) => {
                       }}
                       onBlur={() => {
                         if (displayValue) {
-                          // Make sure the value in the form is updated to include `https://`
                           setValue("googleMapsLink", `https://${displayValue}`);
                         }
                       }}
@@ -505,7 +504,7 @@ const GymForm2 = ({ onSubmit, initialData, onPrevious }) => {
                   <input
                     type="file"
                     multiple
-                    accept="image/*"
+                    accept=".jpg, .jpeg, .png, .svg, .heic, .webp"
                     ref={fileInputRef}
                     onChange={(e) => {
                       const files = Array.from(e.target.files);

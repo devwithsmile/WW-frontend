@@ -12,8 +12,8 @@ function Bookings() {
   const [futureBookings, setFutureBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [noBookings, setNoBookings] = useState(false); // State to handle no bookings
   const { isAuthenticated } = useAuth();
-
 
   const pastPagination = usePagination({
     activePage: 1,
@@ -39,7 +39,7 @@ function Bookings() {
     const fetchBookings = async () => {
       try {
         const response = await api.get(`/users/bookings`);
-        
+
         const bookings = response.data.bookingsWithGymName;
         console.log(bookings);
 
@@ -67,20 +67,26 @@ function Bookings() {
             );
             return bookingDate.isAfter(today, "day");
           });
-          
 
           setTodayBookings(todayBookings);
-          
-          console.log(todayBookings[0]?._id);
           setPastBookings(pastBookings);
           setFutureBookings(futureBookings);
+
+          if (
+            todayBookings.length === 0 &&
+            pastBookings.length === 0 &&
+            futureBookings.length === 0
+          ) {
+            setNoBookings(true); // Set no bookings state to true
+          } else {
+            setNoBookings(false); // Ensure no bookings state is false if there are bookings
+          }
         } else {
-          setError("No bookings found.");
+          setNoBookings(true);
         }
       } catch (err) {
         setError("Failed to fetch bookings.");
         console.log(err);
-        
       } finally {
         setLoading(false);
       }
@@ -94,8 +100,8 @@ function Bookings() {
     ({ _id, rating, ...booking }) => booking
   );
 
-  // Remove ratings from future bookings
-  const removeUnwantedFromPastbookings = pastBookings.map(
+  // Remove ratings from past bookings
+  const removeUnwantedFromPastBookings = pastBookings.map(
     ({ _id, ...booking }) => booking
   );
 
@@ -144,7 +150,23 @@ function Bookings() {
       {loading ? (
         <p>Loading...</p>
       ) : error ? (
-        <p>{error}</p>
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="flex flex-col items-center justify-center text-center p-6 h-64 bg-wwpopdiv shadow-lg max-w-md w-full md:mx-3">
+            <h1 className="text-3xl font-bold text-wwTitleRed mb-4">Error</h1>
+            <p className="text-lg text-wwtext mb-6">{error}</p>
+          </div>
+        </div>
+      ) : noBookings ? (
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="flex flex-col items-center justify-center text-center p-6 h-64 bg-wwpopdiv shadow-lg max-w-md w-full md:mx-3">
+            <h1 className="text-3xl font-bold text-wwTitleRed mb-4">
+              No Bookings
+            </h1>
+            <p className="text-lg text-wwtext mb-6">
+              You have no bookings at the moment.
+            </p>
+          </div>
+        </div>
       ) : (
         <>
           <TodaysBookingSection todayBookings={todayBookings} />
@@ -159,7 +181,7 @@ function Bookings() {
           {pastBookings.length > 0 &&
             renderTableWithPagination(
               pastPagination,
-              removeUnwantedFromPastbookings,
+              removeUnwantedFromPastBookings,
               "Past Bookings"
             )}
         </>

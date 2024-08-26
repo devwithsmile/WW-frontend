@@ -84,6 +84,18 @@ body {
   background-color: #f44336;
 }
 
+.ant-picker-dropdown .ant-picker-cell-disabled {
+  cursor: not-allowed;
+}
+
+.ant-picker-cell.ant-picker-cell-disabled.ant-picker-cell-in-view {
+  background-color: #242424 !important;
+}
+
+.ant-picker-cell.ant-picker-cell-disabled.ant-picker-cell-in-view .ant-picker-cell-inner {
+  color: grey !important;
+}
+
 /* Styling for month and year buttons in the header */
 .ant-picker-month-btn,
 .ant-picker-year-btn {

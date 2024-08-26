@@ -79,6 +79,11 @@ const GymForm1 = ({ onSubmit, initialData }) => {
                       value: 50,
                       message: "Full name must be less than 50 characters",
                     },
+                    pattern: {
+                      value: /^[a-zA-Z\s]+$/,
+                      message:
+                        "Full name should only contain letters and spaces",
+                    },
                   })}
                   className={`w-full px-3 py-2 border ${
                     errors.fullName ? "border-red-500" : "border-gray-600"
@@ -106,8 +111,9 @@ const GymForm1 = ({ onSubmit, initialData }) => {
                   {...register("contactInfo", {
                     required: "Contact Information is required",
                     pattern: {
-                      value: /^\d{10}$/,
-                      message: "Invalid contact number",
+                      value: /^[0-9]{10}$/,
+                      message:
+                        "Invalid contact number format. Must be 10 digits.",
                     },
                   })}
                   className={`w-full px-3 py-2 border ${
@@ -139,6 +145,19 @@ const GymForm1 = ({ onSubmit, initialData }) => {
                   placeholder="Enter your GYM Name"
                   {...register("gymName", {
                     required: "Gym Name is required",
+                    minLength: {
+                      value: 2,
+                      message: "Gym name must be at least 2 characters",
+                    },
+                    maxLength: {
+                      value: 100,
+                      message: "Gym name must be less than 100 characters",
+                    },
+                    pattern: {
+                      value: /^[a-zA-Z\s]+$/,
+                      message:
+                        "Gym name should only contain letters, numbers, and spaces",
+                    },
                   })}
                   className={`w-full px-3 py-2 border ${
                     errors.gymName ? "border-red-500" : "border-gray-600"

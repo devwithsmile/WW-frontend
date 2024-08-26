@@ -171,7 +171,12 @@ const Profile = () => {
       //   }
     } catch (error) {
       console.error("Failed to update gym details", error);
-      toast.error("Failed to update gym details.");
+
+      if (error.response.data.errors[0]) {
+        toast.error(error.response.data.errors[0]);
+      } else {
+        toast.error("Failed to update gym details. Something went wrong");
+      }
     }
   };
 
@@ -184,12 +189,32 @@ const Profile = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Gym Name */}
           <div className="space-y-4">
-            <h3 className="text-2xl font-semibold mb-4 text-wwred">Gym Name</h3>
-            <p className="mb-2">Add a short Gym Name about your gym</p>
+            <label
+              className="block mb-1 text-sm font-medium wwred"
+              htmlFor="gymName"
+            >
+              Gym Name<span className="text-red-500">*</span>
+            </label>
             <Controller
               name="gymName"
               control={control}
               defaultValue=""
+              rules={{
+                required: "Gym Name is required",
+                minLength: {
+                  value: 2,
+                  message: "Gym name must be at least 2 characters",
+                },
+                maxLength: {
+                  value: 100,
+                  message: "Gym name must be less than 100 characters",
+                },
+                pattern: {
+                  value: /^[a-zA-Z\s]+$/,
+                  message:
+                    "Gym name should only contain letters, numbers, and spaces",
+                },
+              }}
               render={({ field }) => (
                 <input
                   {...field}
@@ -209,22 +234,38 @@ const Profile = () => {
 
           {/* Description */}
           <div className="space-y-4">
-            <h3 className="text-2xl font-semibold mb-4 text-wwred">
-              Description
-            </h3>
-            <p className="mb-2">Add a short description about your gym</p>
+            <label
+              className="block mb-1 text-sm font-medium wwred"
+              htmlFor="description"
+            >
+              Description<span className="text-red-500">*</span>
+            </label>
             <Controller
               name="description"
               control={control}
               defaultValue=""
+              rules={{
+                required: "Description is required",
+                minLength: {
+                  value: 200,
+                  message: "Description must be at least 200 characters long",
+                },
+              }}
               render={({ field }) => (
                 <textarea
                   {...field}
                   placeholder="Description"
-                  className="w-full px-3 py-2 h-28 border border-gray-600 bg-wwbg text-white focus:outline-none focus:border-red-500"
+                  className={`w-full px-3 py-2 h-28 border ${
+                    errors.description ? "border-red-500" : "border-gray-600"
+                  } bg-wwbg text-white focus:outline-none focus:border-red-500`}
                 />
               )}
             />
+            {errors.description && (
+              <p className="text-red-500 text-sm">
+                {errors.description.message}
+              </p>
+            )}
           </div>
 
           {/* Address */}
@@ -452,8 +493,8 @@ const Profile = () => {
                 </p>
               )}
             </div>
+            {/* Max Occupants */}
             <div className="flex flex-col md:flex-row justify-center mb-4 gap-4">
-              {/* Max Occupants */}
               <div className="w-full">
                 <label
                   className="block text-sm font-medium mb-1 text-white"
@@ -586,9 +627,6 @@ const Profile = () => {
             <h3 className="text-2xl font-semibold mb-4 text-wwred">
               Upload Images
             </h3>
-            <p className="mb-2">
-              Add a minimum of four well-lit photographs of your gym.
-            </p>
             <Controller
               name="images"
               control={control}
@@ -631,7 +669,7 @@ const Profile = () => {
                   <input
                     type="file"
                     multiple
-                    accept="image/*"
+                    accept=".jpg, .jpeg, .png, .svg, .heic, .webp"
                     ref={fileInputRef}
                     onChange={(e) => {
                       const files = Array.from(e.target.files);
