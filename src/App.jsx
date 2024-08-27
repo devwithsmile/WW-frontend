@@ -23,6 +23,7 @@ import OwnerDashboard from "./Pages/GymOwnerPages/OwnerDashboard";
 import NotAuthorized from "./Pages/Error/NotAuthorized";
 import ApprovalStatus from "./Pages/GymOwnerPages/ApprovalStatus";
 import Payment from "./Pages/GymUserPages/Payment";
+import AdminPage from "./Pages/Admin/AdminPage";
 
 // Main application component
 function App() {
@@ -44,6 +45,13 @@ function App() {
                   <PrivateRoute element={<Home />} allowedRoles="customer" />
                 }
               />
+              <Route
+                path="/admin"
+                element={
+                  <PrivateRoute element={<AdminPage />} allowedRoles="customer" />
+                }
+              />
+
               <Route path="/search" element={<Search />} />
               <Route
                 path="/bookings"
