@@ -13,6 +13,7 @@ function BookNow({ price, gym_id, schedule }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [slots, setSlots] = useState([]);
+  const [maxDuration, setMaxDuration] = useState(120); // Maximum duration in minutes
   const { isAuthenticated } = useAuth();
   const { control, handleSubmit, setValue, getValues, watch } = useForm({
     defaultValues: {
@@ -36,14 +37,28 @@ function BookNow({ price, gym_id, schedule }) {
     }
   }, [watchedDate]);
 
-  // Update time options when the slot changes
+  // Update time options and maximum duration when the slot changes
   useEffect(() => {
     if (watchedSlot) {
       const [slotFrom, slotTo] = watchedSlot.split(" - ");
       const times = generateAvailableTimes(slotFrom, slotTo);
       setValue("time", times[0]); // default to the first available time
+      setMaxDuration(
+        dayjs(slotTo, format).diff(dayjs(slotFrom, format), "minute")
+      ); // Update max duration
     }
   }, [watchedSlot]);
+
+  // Update maximum duration when the time changes
+  useEffect(() => {
+    if (watchedTime && watchedSlot) {
+      const [slotFrom, slotTo] = watchedSlot.split(" - ");
+      const startTime = dayjs(watchedTime, format);
+      const endTime = dayjs(slotTo, format);
+      const availableDuration = endTime.diff(startTime, "minute");
+      setMaxDuration(Math.min(availableDuration, 120)); // Ensure the max duration is capped at 120 minutes
+    }
+  }, [watchedTime]);
 
   // Function to update available slots based on selected date/day
   const updateAvailableSlots = (date) => {
@@ -60,9 +75,13 @@ function BookNow({ price, gym_id, schedule }) {
       const times = generateAvailableTimes(slotFrom, slotTo);
       setValue("time", times[0]); // Default to the first available time
       setValue("slot", `${availableSlots[0].from} - ${availableSlots[0].to}`); // Default slot
+      setMaxDuration(
+        dayjs(slotTo, format).diff(dayjs(slotFrom, format), "minute")
+      ); // Update max duration
     } else {
       setValue("time", ""); // Reset time if no slots are available
       setValue("slot", ""); // Reset slot if no slots are available
+      setMaxDuration(120); // Reset max duration
     }
 
     return availableSlots;
@@ -93,42 +112,44 @@ function BookNow({ price, gym_id, schedule }) {
     }
   };
 
-  // Handle it when Slot changes
+  // Handle slot change
   const handleSlotChange = (e) => {
     const selectedSlot = e.target.value;
     setValue("slot", selectedSlot);
 
     const [slotFrom, slotTo] = selectedSlot.split(" - ");
     const times = generateAvailableTimes(slotFrom, slotTo);
-    setValue("time", times[0]); // default to the first available time
+    setValue("time", times[0]); // Default to the first available time
   };
 
-  // Handle it when Time changes
+  // Handle time change
   const handleStartTimeChange = (e) => {
     const selectedTime = e.target.value;
     setValue("time", selectedTime);
+    setValue("duration", 60);
   };
 
-  // Increase Duration
+  // Increase duration
   const increaseDuration = () => {
     const currentDuration = getValues("duration");
-    const newDuration = currentDuration + 30; // Increment by 30 minutes
+    const newDuration = Math.min(currentDuration + 30, maxDuration); // Limit the duration to the max allowed
     setValue("duration", newDuration);
   };
 
-  // Decrease Duration
+  // Decrease duration
   const decreaseDuration = () => {
     const currentDuration = getValues("duration");
     const newDuration = Math.max(currentDuration - 30, 60); // Decrement by 30 minutes but not below 60 minutes
     setValue("duration", newDuration);
   };
 
-  // Format Duration
+  // Format duration
   const formatDuration = (minutes) => {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
     return `${String(hours).padStart(2, "0")}:${String(mins).padStart(2, "0")}`;
   };
+
   const disableDate = (current) => {
     const today = dayjs().startOf("day"); // Start of today to avoid time issues
     const twoMonthsFromNow = today.add(2, "month");
@@ -252,6 +273,7 @@ function BookNow({ price, gym_id, schedule }) {
           </label>
         </div>
       )}
+
       {/* Time */}
       {slots.length > 0 && (
         <div className="flex-col mb-6 lg:mb-0">
@@ -263,7 +285,7 @@ function BookNow({ price, gym_id, schedule }) {
               <select
                 {...field}
                 className="w-full px-3 py-2 text-center text-white border border-red-500 rounded-none bg-wwbg focus:outline-none focus:border-red-500"
-                onChange={(e) => handleStartTimeChange(e)}
+                onChange={handleStartTimeChange}
               >
                 {generateAvailableTimes(
                   getValues("slot").split(" - ")[0],

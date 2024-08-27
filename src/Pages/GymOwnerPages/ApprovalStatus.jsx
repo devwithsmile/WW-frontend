@@ -1,10 +1,14 @@
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 
 const ApprovalStatus = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { reason, status } = location.state || {};
+  const { status } = useAuth();
+  const { reason } = location.state || {
+    reason: "Your gym registration is still under review.",
+  };
 
   useEffect(() => {
     if (status === "active") {
@@ -32,11 +36,12 @@ const ApprovalStatus = () => {
           Approval Status
         </h1>
         <p className="text-xl mb-4">Status: Denied</p>
+        {/* TODO: Yet to setup a page for denied form */}
         <button
-          onClick={() => navigate("/contact-us")}
+          onClick={() => navigate("/#")}
           className="px-6 py-3 text-white bg-red-500 border border-red-500 rounded-lg shadow-md hover:bg-red-600 transition-colors"
         >
-          Contact Us
+          Refill the form
         </button>
       </div>
     );

@@ -17,7 +17,6 @@ const OwnerLogin = () => {
   const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
 
   // Set focus when required field is not there
   useEffect(() => {
