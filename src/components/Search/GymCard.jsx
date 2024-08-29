@@ -1,7 +1,5 @@
 import React from "react";
-import WWButton from "../WWButton";
 import { Link } from "react-router-dom";
-// import { FiStar } from 'react-icons/fi';
 
 const GymCard = ({ gymName, imageSrc, rating, gymId }) => {
   const checkRating = (rate) => {
@@ -12,13 +10,13 @@ const GymCard = ({ gymName, imageSrc, rating, gymId }) => {
   };
 
   return (
-    <div className="relative bg-black text-white overflow-hidden shadow-lg">
+    <div className="relative overflow-hidden text-white bg-black shadow-lg">
       {/* Image */}
       <Link to={`/gym/${gymId}`}>
         <img
           src={imageSrc}
           alt={gymName}
-          className="w-full h-64 object-cover"
+          className="object-cover w-full h-64"
         />
       </Link>
       {/* Rating */}
@@ -38,9 +36,9 @@ const GymCard = ({ gymName, imageSrc, rating, gymId }) => {
               strokeWidth="1"
             />
             <foreignObject x="0" y="0" width="50" height="40">
-              <div className="flex justify-center items-center h-full">
+              <div className="flex items-center justify-center h-full">
                 {/* <FiStar className="mr-1" /> */}
-                <span className="text-white font-semibold md:font-bold text-base md:text-xl">
+                <span className="text-base font-semibold text-white md:font-bold md:text-xl">
                   {checkRating(rating)}
                 </span>
               </div>
@@ -49,8 +47,8 @@ const GymCard = ({ gymName, imageSrc, rating, gymId }) => {
         </div>
       </div>
       {/* Gym & Button */}
-      <div className="absolute bottom-0 left-0 right-0 bg-wwbg bg-opacity-50 backdrop-blur p-2 sm:p-4 flex justify-between items-center flex-col space-y-2 sm:flex-row sm:space-y-0">
-        <span className="text-lg text-center sm:text-start font-semibold">
+      <div className="absolute bottom-0 left-0 right-0 flex flex-col items-center justify-between p-2 space-y-2 bg-opacity-50 bg-wwbg backdrop-blur sm:p-4 sm:flex-row sm:space-y-0">
+        <span className="text-lg font-semibold text-center sm:text-start">
           {gymName}
         </span>
         <Link to={`/gym/${gymId}`}>

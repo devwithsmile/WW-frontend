@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import landingPageimage from "../../assets/landingPageImage.png";
 import profilePic from "../../assets/profileP.jpg";
 // there is className called width-change in this File. we need to increase its width to make the page more appealing
 
 function LandingPage() {
+  const [loading, setLoading] = useState(true)
   return (
     <div className="pb-10 bg-grey-900">
       {/* section 1 */}
@@ -69,7 +70,7 @@ function LandingPage() {
             {/* Facilities */}
             <div className="flex items-center justify-center my-6 md:my-12">
               <div className="flex flex-col space-y-4 lg:flex-row lg:space-y-0 lg:space-x-4">
-                <div className="flex justify-center item space-x-4">
+                <div className="flex justify-center space-x-4 item">
                   <div className="flex items-center justify-center h-12 text-sm font-semibold text-white bg-transparent border shadow-sm w-36 focus-visible:outline-none border-wwred">
                     WeightLifting
                   </div>
@@ -108,10 +109,15 @@ function LandingPage() {
             </p>
 
             {/* Button For Gym Owner to enroll*/}
-            <div className="items-center justify-between mt-10 lg:flex gap-x-6">
+            <div className="flex flex-col md:flex-row items-center justify-between mt-10 lg:flex gap-x-6">
               <Link to="/owners/register" className="inline-block m-1">
                 <button className="bg-transparent px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-wwred focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 lg:w-full w-40 mb-2 text-center border border-wwred">
                   Enroll Now
+                </button>
+              </Link>
+              <Link to="/owners/login" className="inline-block m-1">
+                <button className="bg-red-700 px-3.5 py-2.5 text-sm font-semibold text-wwtext shadow-sm hover:bg-wwred focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 lg:w-full w-40 mb-2 text-center border border-red-300">
+                  Login
                 </button>
               </Link>
             </div>

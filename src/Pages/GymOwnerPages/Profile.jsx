@@ -1,11 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { PiCurrencyInrLight } from "react-icons/pi";
-import PropTypes from "prop-types";
 import api from "../../api/axios";
 import dataStates from "../../data/states.json";
-
-import classNames from "classnames"; // Remove this one after dev
 import { toast } from "react-toastify";
 
 const GAP_FROM_TOP = 150; // When submitting focusing on input will give 150 gap on top

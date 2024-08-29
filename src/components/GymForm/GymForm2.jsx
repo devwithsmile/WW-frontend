@@ -3,6 +3,7 @@ import { useForm, Controller } from "react-hook-form";
 import { PiCurrencyInrLight } from "react-icons/pi";
 import PropTypes from "prop-types";
 import dataStates from "../../data/states.json";
+import indianPincodes from "indian-pincodes";
 
 const GAP_FROM_TOP = 150; // When submitting focusing on input will give 150 gap on top
 // Price-related constants
@@ -74,6 +75,22 @@ const GymForm2 = ({ onSubmit, initialData, onPrevious }) => {
   const watchFacilities = watch("facilities", []);
   const watchImages = watch("images");
   const price = watch("price");
+
+  const handlePincodeChange = () => {
+    const pincode = getValues("pincode");
+
+    if (pincode && /^\d{6}$/.test(pincode)) {
+      const address = indianPincodes.getPincodeDetails(Number(pincode));
+      console.log(address);
+      if (address) {
+        setValue("city", address.name);
+        setValue("state", address.state);
+        console.log(getValues("pincode"));
+        console.log(getValues("city"));
+        console.log(getValues("state"));
+      }
+    }
+  };
 
   // setting the price
   const handleSliderChange = (event) => {
@@ -256,7 +273,7 @@ const GymForm2 = ({ onSubmit, initialData, onPrevious }) => {
                         Select State
                       </option>
                       {states.map((state) => (
-                        <option key={state.code} value={state.code}>
+                        <option key={state.code} value={state.name}>
                           {state.name}
                         </option>
                       ))}
@@ -275,23 +292,28 @@ const GymForm2 = ({ onSubmit, initialData, onPrevious }) => {
                   className="block text-sm font-medium mb-1 text-white"
                   htmlFor="pincode"
                 >
-                  PIN Code<span className="text-red-500">*</span>
+                  Pincode<span className="text-red-500">*</span>
                 </label>
                 <Controller
                   name="pincode"
                   control={control}
                   defaultValue=""
                   rules={{
-                    required: "PIN Code is required",
+                    required: "Pincode is required",
                     pattern: {
-                      value: /^\d{6}$/,
-                      message: "PIN Code must be exactly 6 digits",
+                      value: /^[1-9][0-9]{5}$/,
+                      message: "Pincode must be a 6-digit number",
                     },
                   }}
                   render={({ field }) => (
                     <input
                       {...field}
-                      placeholder="PIN"
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        field.onChange(e);
+                        handlePincodeChange();
+                      }}
+                      placeholder="Pincode"
                       className={`w-full px-3 py-2 border ${
                         errors.pincode ? "border-red-500" : "border-gray-600"
                       } bg-wwbg text-white focus:outline-none focus:border-red-500`}
@@ -653,19 +675,7 @@ const GymForm2 = ({ onSubmit, initialData, onPrevious }) => {
 
 GymForm2.propTypes = {
   onSubmit: PropTypes.func.isRequired,
-  initialData: PropTypes.shape({
-    description: PropTypes.string,
-    addressLine1: PropTypes.string,
-    addressLine2: PropTypes.string,
-    city: PropTypes.string,
-    state: PropTypes.string,
-    pincode: PropTypes.string,
-    googleMapsLink: PropTypes.string,
-    price: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    images: PropTypes.arrayOf(PropTypes.instanceOf(File)),
-    facilities: PropTypes.arrayOf(PropTypes.string),
-    agreement: PropTypes.bool,
-  }),
+  initialData: PropTypes.object,
   onPrevious: PropTypes.func.isRequired,
 };
 

@@ -1,9 +1,20 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import Slider from 'react-slick'
 import PropTypes from 'prop-types'
+import CarouselSkeleton from '../Skeletons/CarouselSkeleton'
 
 function Carousel({ images }) {
   const sliderRef = useRef(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    // Simulate image loading delay
+    const loadImages = () => {
+      setTimeout(() => setLoading(false), 4000) // Adjust the delay as needed
+    }
+
+    loadImages()
+  }, [])
 
   const settings = {
     dots: true,
@@ -13,13 +24,16 @@ function Carousel({ images }) {
     slidesToScroll: 1,
     arrows: true,
     fade: true,
-    // Glide/slide animation
   }
 
   const handleThumbnailClick = (index) => {
     if (sliderRef.current) {
       sliderRef.current.slickGoTo(index)
     }
+  }
+
+  if (loading) {
+    return <CarouselSkeleton /> // Render the skeleton while loading
   }
 
   return (
@@ -37,26 +51,16 @@ function Carousel({ images }) {
       </Slider>
 
       {/* Thumbnail Navigation */}
-      <div className='hidden sm:!flex justify-between mt-4 space-x-4 overflow-x-auto '>
+      <div className='justify-between hidden mt-4 space-x-4 overflow-x-auto sm:flex'>
         {images.slice(0, 4).map((image, index) => (
           <div
             key={index}
-            className={`w-1/5 ${
-              images.indexOf(
-                images[
-                  sliderRef.current?.innerSlider?.current?.slickGetOption(
-                    'initialSlide'
-                  )
-                ]
-              ) === index
-                ? 'border-2 border-white'
-                : ''
-            }`}
+            className='w-1/5 cursor-pointer'
             onClick={() => handleThumbnailClick(index)}
           >
             <img
               src={image}
-              className='w-48 cursor-pointer h-28'
+              className='object-cover w-full h-full'
               alt={`thumbnail-${index}`}
             />
           </div>

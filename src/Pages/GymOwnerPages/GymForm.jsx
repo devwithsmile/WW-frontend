@@ -16,9 +16,8 @@ const GymForm = () => {
   useEffect(() => {
     if (status === "active") {
       navigate("/owners/dashboard");
+      toast.error("Not allowed to view this form");
     }
-
-    toast.error("Not allowed to view this form");
   }, [status]);
 
   const handleForm1Submit = (data) => {

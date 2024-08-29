@@ -41,7 +41,7 @@ function Bookings() {
         const response = await api.get(`/users/bookings`);
 
         const bookings = response.data.bookingsWithGymName;
-        console.log(bookings);
+        console.log("All bookings : ", bookings);
 
         if (bookings.length > 0) {
           const today = new Date();
@@ -67,6 +67,8 @@ function Bookings() {
             );
             return bookingDate.isAfter(today, "day");
           });
+
+          console.log("todayBookingstodayBookings", todayBookings);
 
           setTodayBookings(todayBookings);
           setPastBookings(pastBookings);
@@ -102,7 +104,7 @@ function Bookings() {
 
   // Remove ratings from past bookings
   const removeUnwantedFromPastBookings = pastBookings.map(
-    ({ _id, ...booking }) => booking
+    ({ _id, rating, ...booking }) => booking
   );
 
   const renderTableWithPagination = (pagination, data, title) => {

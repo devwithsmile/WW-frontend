@@ -4,6 +4,7 @@ import api from "../../api/axios";
 import moment from "moment";
 import { toast } from "react-toastify";
 import { data } from "autoprefixer";
+import TodaysBookingSkeleton from "../Skeletons/TodaysBookingSkeleton";
 
 function TodaysBookingSection({ todayBookings = [] }) {
   const [gymImage, setGymImage] = useState(null);
@@ -15,7 +16,6 @@ function TodaysBookingSection({ todayBookings = [] }) {
   const modalRef = useRef(null);
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
-
   const incrementDuration = () => setDuration((prev) => prev + 5);
   const decrementDuration = () =>
     setDuration((prev) => (prev > 0 ? prev - 5 : 0));
@@ -25,6 +25,18 @@ function TodaysBookingSection({ todayBookings = [] }) {
       closeModal();
     }
   };
+
+  const [loading, setLoading] = useState(true); // State to manage loading
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      await new Promise((resolve) => setTimeout(resolve, 4000)); // Simulate 4 seconds network delay
+      setLoading(false);
+    };
+
+    fetchData();
+  }, []);
+
 
   useEffect(() => {
     if (todayBookings.length > 0) {
@@ -60,7 +72,7 @@ function TodaysBookingSection({ todayBookings = [] }) {
   if (todayBookings.length === 0) {
     return (
       <div className="flex items-center justify-center mb-6">
-        <div className="text-center p-6 bg-wwpopdiv shadow-lg w-full md:mx-3">
+        <div className="w-full p-6 text-center shadow-lg bg-wwpopdiv md:mx-3">
           <p className="text-lg text-wwtext">No bookings for today.</p>
         </div>
       </div>
@@ -68,7 +80,7 @@ function TodaysBookingSection({ todayBookings = [] }) {
   }
 
   function formatDate(inputDate) {
-    const [day, month, year] = inputDate.split("/").map(Number);
+    const [day, month, year] = inputDate.split("-").map(Number);
     const date = new Date(year, month - 1, day); // Months are 0-based in JavaScript Date object
     const options = { year: "numeric", month: "long", day: "numeric" };
     return date.toLocaleDateString("en-US", options);
@@ -80,6 +92,7 @@ function TodaysBookingSection({ todayBookings = [] }) {
 
   const gymName = booking.gym_name || "Gym Name";
   const bookingDate = formatDate(booking.date) || "Booking Date";
+    
   const bookingSlot = `${booking.from} - ${booking.to}` || "Booking Slot";
   const welcomeMessage = `Welcome to ${gymName}!`;
 
@@ -129,129 +142,131 @@ function TodaysBookingSection({ todayBookings = [] }) {
 
   return (
     <>
+      {loading ? (<TodaysBookingSkeleton />) : (<>
       <h3 className="mb-4 text-lg font-bold">Today{"'"}s Bookings</h3>
-      <div className="flex flex-col items-center justify-center w-full mb-6 shadow-lg lg:flex-row">
-        {/* Gym Image */}
-        <div className="flex-none w-full lg:w-[30rem] h-[15rem] overflow-hidden relative">
-          <img
-            src={gymImage || imageforPage}
-            alt="Gym Image"
-            className="object-cover w-full h-full"
-          />
-        </div>
-
-        <div className="w-full px-3 my-3 md:px-6">
-          {/* Gym Content */}
-          <div className="flex flex-col items-center justify-between md:flex-row md:items-start">
-            <div className="w-full">
-              <h2 className="text-xl font-bold">{gymName}</h2>
-              <p className="text-sm text-gray-400">{welcomeMessage}</p>
-            </div>
-            <div className="flex flex-row justify-between w-full mt-2 md:flex-col md:text-right md:mt-0">
-              <p className="text-sm">{bookingDate}</p>
-              <p className="text-sm">{bookingSlot}</p>
-            </div>
+        <div className="flex flex-col items-center justify-center w-full mb-6 shadow-lg lg:flex-row">
+          {/* Gym Image */}
+          <div className="flex-none w-full lg:w-[30rem] h-[15rem] overflow-hidden relative">
+            <img
+              src={gymImage || imageforPage}
+              alt="Gym Image"
+              className="object-cover w-full h-full"
+            />
           </div>
 
-          {/* Review */}
-          <div className="flex items-center mt-4">
-            <p className="mr-4">How was your experience?</p>
-            <div className="flex">
-              {Array.from({ length: 5 }, (_, index) => index + 1).map(
-                (star) => (
-                  <span
-                    key={star}
-                    className={`text-2xl cursor-pointer ${
-                      (hover || rating) >= star
-                        ? "text-red-500"
-                        : "text-gray-600"
-                    }`}
-                    onClick={async () =>
-                      setRating(
-                        star,
-                        await api.patch("/bookings/ratings", {
-                          booking_id: booking._id,
-                          rating: rating,
-                        })
-                      )
-                    }
-                    onMouseEnter={() => setHover(star)}
-                    onMouseLeave={() => setHover(0)}
+          <div className="w-full px-3 my-3 md:px-6">
+            {/* Gym Content */}
+            <div className="flex flex-col items-center justify-between md:flex-row md:items-start">
+              <div className="w-full">
+                <h2 className="text-xl font-bold">{gymName}</h2>
+                <p className="text-sm text-gray-400">{welcomeMessage}</p>
+              </div>
+              <div className="flex flex-row justify-between w-full mt-2 md:flex-col md:text-right md:mt-0">
+                <p className="text-sm">{bookingDate}</p>
+                <p className="text-sm">{bookingSlot}</p>
+              </div>
+            </div>
+
+            {/* Review */}
+            <div className="flex items-center mt-4">
+              <p className="mr-4">How was your experience?</p>
+              <div className="flex">
+                {Array.from({ length: 5 }, (_, index) => index + 1).map(
+                  (star) => (
+                    <span
+                      key={star}
+                      className={`text-2xl cursor-pointer ${(hover || rating) >= star
+                          ? "text-red-500"
+                          : "text-gray-600"
+                        }`}
+                      onClick={async () =>
+                        setRating(
+                          star,
+                          await api.patch("/bookings/ratings", {
+                            booking_id: booking._id,
+                            rating: rating,
+                          })
+                        )
+                      }
+                      onMouseEnter={() => setHover(star)}
+                      onMouseLeave={() => setHover(0)}
+                    >
+                      ★
+                    </span>
+                  )
+                )}
+              </div>
+            </div>
+
+            {/* Buttons */}
+            <div className="flex flex-col items-center justify-center mt-6 space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4 md:justify-end">
+              <div className="w-full md:w-auto">
+                <button
+                  type="button"
+                  onClick={openModal}
+                  className="w-full md:w-40 px-4 bg-wwred py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                >
+                  Extend Session
+                </button>
+                {/* Modal */}
+                {isOpen && (
+                  <div
+                    ref={modalRef}
+                    className="bg-wwbg text-white p-4 mt-5 shadow-lg border-[0.0001rem] border-gray-700  space-y-4 absolute ml-[15px] md:ml-[-60px] z-50"
                   >
-                    ★
-                  </span>
-                )
-              )}
-            </div>
-          </div>
-
-          {/* Buttons */}
-          <div className="flex flex-col items-center justify-center mt-6 space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4 md:justify-end">
-            <div className="w-full md:w-auto">
+                    <div className="text-center">
+                      <label className="text-lg font-bold text-red-500">
+                        Duration
+                      </label>
+                    </div>
+                    <div className="flex items-center justify-center space-x-4">
+                      <button
+                        type="button"
+                        onClick={decrementDuration}
+                        className="px-3 py-1.5 text-lg font-bold border border-red-900"
+                      >
+                        -
+                      </button>
+                      <input
+                        type="text"
+                        readOnly
+                        value={duration}
+                        className="w-20 px-1 py-2 text-center text-white border border-red-500 rounded-none cursor-not-allowed bg-wwbg focus:outline-none focus:border-red-500"
+                      />
+                      <button
+                        type="button"
+                        onClick={incrementDuration}
+                        className="px-3 py-1.5 text-lg font-bold border border-red-900"
+                      >
+                        +
+                      </button>
+                    </div>
+                    <div className="text-center">
+                      <button
+                        type="button"
+                        onClick={handleExtend}
+                        className="w-full px-4 bg-wwred py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                      >
+                        Submit
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
               <button
                 type="button"
-                onClick={openModal}
-                className="w-full md:w-40 px-4 bg-wwred py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                onClick={handleCancel}
+                className="w-full md:w-40 px-4 bg-transparent py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 text-center border border-wwred"
               >
-                Extend Session
+                Cancel
               </button>
-              {/* Modal */}
-              {isOpen && (
-                <div
-                  ref={modalRef}
-                  className="bg-wwbg text-white p-4 mt-5 shadow-lg border-[0.0001rem] border-gray-700  space-y-4 absolute ml-[15px] md:ml-[-60px] z-50"
-                >
-                  <div className="text-center">
-                    <label className="text-lg font-bold text-red-500">
-                      Duration
-                    </label>
-                  </div>
-                  <div className="flex items-center justify-center space-x-4">
-                    <button
-                      type="button"
-                      onClick={decrementDuration}
-                      className="px-3 py-1.5 text-lg font-bold border border-red-900"
-                    >
-                      -
-                    </button>
-                    <input
-                      type="text"
-                      readOnly
-                      value={duration}
-                      className="w-20 px-1 py-2 text-center text-white border border-red-500 rounded-none cursor-not-allowed bg-wwbg focus:outline-none focus:border-red-500"
-                    />
-                    <button
-                      type="button"
-                      onClick={incrementDuration}
-                      className="px-3 py-1.5 text-lg font-bold border border-red-900"
-                    >
-                      +
-                    </button>
-                  </div>
-                  <div className="text-center">
-                    <button
-                      type="button"
-                      onClick={handleExtend}
-                      className="w-full px-4 bg-wwred py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                    >
-                      Submit
-                    </button>
-                  </div>
-                </div>
-              )}
             </div>
-            <button
-              type="button"
-              onClick={handleCancel}
-              className="w-full md:w-40 px-4 bg-transparent py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 text-center border border-wwred"
-            >
-              Cancel
-            </button>
           </div>
         </div>
-      </div>
-    </>
-  );
+        </>)}
+
+      </>
+      );
 }
 
-export default TodaysBookingSection;
+      export default TodaysBookingSection;

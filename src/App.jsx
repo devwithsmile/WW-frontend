@@ -3,26 +3,30 @@ import { Route, Routes } from "react-router-dom";
 import PrivateRoute from "./components/routes/PrivateRoute";
 import PublicRoute from "./components/routes/PublicRoute";
 import Layout from "./components/Layout";
-import LandingPage from "./Pages/GymUserPages/LandingPage";
+// User
 import Home from "./Pages/GymUserPages/Home";
-import Search from "./Pages/GymUserPages/Search";
 import Bookings from "./Pages/GymUserPages/Bookings";
 import Login from "./Pages/GymUserPages/Login";
 import Register from "./Pages/GymUserPages/Register";
-import GymDetails from "./Pages/GymUserPages/GymDetails";
 import PageNotFound from "./Pages/Error/PageNotFound";
 import Profile from "./Pages/GymUserPages/Profile";
-import OwnerSignup from "./Pages/GymOwnerPages/OwnerSignup";
-import OwnerLogin from "./Pages/GymOwnerPages/OwnerLogin";
+import Payment from "./Pages/GymUserPages/Payment";
+// Owner
+import OwnerSignup from "./Pages/GymOwnerPages/Signup";
+import OwnerLogin from "./Pages/GymOwnerPages/Login";
 import OwnerProfile from "./Pages/GymOwnerPages/Profile";
 import GymForm from "./Pages/GymOwnerPages/GymForm";
+import OwnerSlot from "./Pages/GymOwnerPages/Slot";
+import OwnerDashboard from "./Pages/GymOwnerPages/Dashboard";
+import ApprovalStatus from "./Pages/GymOwnerPages/ApprovalStatus";
+// Common to All
+import Search from "./Pages/GymUserPages/Search";
+import GymDetails from "./Pages/GymUserPages/GymDetails";
+import LandingPage from "./Pages/GymUserPages/LandingPage";
 import ForgotPasswordForm from "./Pages/ResetPassword/ForgotPassword";
 import ResetPassword from "./Pages/ResetPassword/ResetPassword";
-import SlotPage from "./Pages/GymOwnerPages/SlotPage";
-import OwnerDashboard from "./Pages/GymOwnerPages/OwnerDashboard";
 import NotAuthorized from "./Pages/Error/NotAuthorized";
-import ApprovalStatus from "./Pages/GymOwnerPages/ApprovalStatus";
-import Payment from "./Pages/GymUserPages/Payment";
+// Admin
 import AdminPage from "./Pages/Admin/AdminPage";
 
 // Main application component
@@ -34,6 +38,16 @@ function App() {
         element={
           <Layout>
             <Routes>
+              {/* Admin's Routes */}
+              <Route
+                path="/admin"
+                element={
+                  <PrivateRoute
+                    element={<AdminPage />}
+                    allowedRoles="customer" // TODO: change it into moderator when moderator is implemented
+                  />
+                }
+              />
               {/* User's Routes */}
               <Route
                 path="/"
@@ -45,13 +59,6 @@ function App() {
                   <PrivateRoute element={<Home />} allowedRoles="customer" />
                 }
               />
-              <Route
-                path="/admin"
-                element={
-                  <PrivateRoute element={<AdminPage />} allowedRoles="customer" />
-                }
-              />
-
               <Route path="/search" element={<Search />} />
               <Route
                 path="/bookings"
@@ -113,7 +120,7 @@ function App() {
               <Route
                 path="/owners/slots"
                 element={
-                  <PrivateRoute element={<SlotPage />} allowedRoles="owner" />
+                  <PrivateRoute element={<OwnerSlot />} allowedRoles="owner" />
                 }
               />
               <Route
