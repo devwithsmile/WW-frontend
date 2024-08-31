@@ -5,15 +5,27 @@ import { usePagination } from "pagination-react-js";
 import TableComponent from "../../components/Bookings/TableComponent.jsx";
 import TodaysBookingSection from "../../components/Bookings/TodaysBookingSection.jsx";
 import moment from "moment";
+import { useDispatch, useSelector } from "react-redux";
+import { setTodayBookingLoadingFalse, setTodayBookingLoadingTrue } from "../../redux/todayBookingSlice.js";
+import { setTableCompLoadingFalse, setTableCompLoadingTrue } from "../../redux/tableCompSlice.js";
+import BookingsPageSkeleton from "../../components/Skeletons/BookingsPageSkeleton.jsx";
 
 function Bookings() {
   const [todayBookings, setTodayBookings] = useState([]);
   const [pastBookings, setPastBookings] = useState([]);
   const [futureBookings, setFutureBookings] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [noBookings, setNoBookings] = useState(false); // State to handle no bookings
   const { isAuthenticated } = useAuth();
+
+  const isTodayBookingLoading = useSelector((state) => state.isBookingsLoading.todayBookingLoading.loading);
+  const isTableLoading = useSelector((state) => state.isBookingsLoading.tableCompLoading.loading);
+
+  const dispatch = useDispatch()
+
+  // Check if any component is still loading
+  const loading = isTodayBookingLoading || isTableLoading;
+
 
   const pastPagination = usePagination({
     activePage: 1,
@@ -37,7 +49,10 @@ function Bookings() {
 
   useEffect(() => {
     const fetchBookings = async () => {
+      dispatch(setTableCompLoadingTrue())
+      dispatch(setTodayBookingLoadingTrue())
       try {
+    
         const response = await api.get(`/users/bookings`);
 
         const bookings = response.data.bookingsWithGymName;
@@ -90,7 +105,8 @@ function Bookings() {
         setError("Failed to fetch bookings.");
         console.log(err);
       } finally {
-        setLoading(false);
+        dispatch(setTodayBookingLoadingFalse())
+        dispatch(setTableCompLoadingFalse())
       }
     };
 
@@ -130,9 +146,8 @@ function Bookings() {
               <li
                 key={index}
                 onClick={() => setActivePage(number)}
-                className={`pagination-item ${
-                  number === pageNumbers.activePage ? "active" : ""
-                }`}
+                className={`pagination-item ${number === pageNumbers.activePage ? "active" : ""
+                  }`}
               >
                 {number}
               </li>
@@ -150,21 +165,21 @@ function Bookings() {
   return (
     <div className="p-6">
       {loading ? (
-        <p>Loading...</p>
+        <BookingsPageSkeleton />
       ) : error ? (
         <div className="flex items-center justify-center min-h-screen">
-          <div className="flex flex-col items-center justify-center text-center p-6 h-64 bg-wwpopdiv shadow-lg max-w-md w-full md:mx-3">
-            <h1 className="text-3xl font-bold text-wwTitleRed mb-4">Error</h1>
-            <p className="text-lg text-wwtext mb-6">{error}</p>
+          <div className="flex flex-col items-center justify-center w-full h-64 max-w-md p-6 text-center shadow-lg bg-wwpopdiv md:mx-3">
+            <h1 className="mb-4 text-3xl font-bold text-wwTitleRed">Error</h1>
+            <p className="mb-6 text-lg text-wwtext">{error}</p>
           </div>
         </div>
       ) : noBookings ? (
         <div className="flex items-center justify-center min-h-screen">
-          <div className="flex flex-col items-center justify-center text-center p-6 h-64 bg-wwpopdiv shadow-lg max-w-md w-full md:mx-3">
-            <h1 className="text-3xl font-bold text-wwTitleRed mb-4">
+          <div className="flex flex-col items-center justify-center w-full h-64 max-w-md p-6 text-center shadow-lg bg-wwpopdiv md:mx-3">
+            <h1 className="mb-4 text-3xl font-bold text-wwTitleRed">
               No Bookings
             </h1>
-            <p className="text-lg text-wwtext mb-6">
+            <p className="mb-6 text-lg text-wwtext">
               You have no bookings at the moment.
             </p>
           </div>

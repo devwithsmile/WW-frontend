@@ -11,8 +11,8 @@ const AboutSectionSkeleton = () => {
       </div>
       
       {/* Description Skeleton */}
-      <div className='mt-3 bg-[#2e2727]'>
-        <Skeleton count={4} height={20} baseColor="#171717" highlightColor="#2e2727"/>
+      <div className='mt-3'>
+        <Skeleton count={5} height={20} baseColor="#171717" highlightColor="#2e2727"/>
       </div>
     </div>
   )

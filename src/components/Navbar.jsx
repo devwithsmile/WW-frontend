@@ -96,6 +96,19 @@ const Navbar = () => {
                         Status
                       </NavLink>
                     </li>
+                  ) : status === "rejected" ? (
+                    <>
+                      <li className="nav-item">
+                        <NavLink to="/owners/status" onClick={closeMenu}>
+                          Status
+                        </NavLink>
+                      </li>
+                      <li className="nav-item">
+                        <NavLink to="/owners/resubmit" onClick={closeMenu}>
+                          Form
+                        </NavLink>
+                      </li>
+                    </>
                   ) : status === "new" ? (
                     <li className="nav-item">
                       <NavLink to="/owners/gymForm" onClick={closeMenu}>
@@ -212,6 +225,19 @@ const Navbar = () => {
                         Status
                       </NavLink>
                     </li>
+                  ) : status === "rejected" ? (
+                    <>
+                      <li className="nav-item">
+                        <NavLink to="/owners/status" onClick={closeMenu}>
+                          Status
+                        </NavLink>
+                      </li>
+                      <li className="nav-item">
+                        <NavLink to="/owners/resubmit" onClick={closeMenu}>
+                          Form
+                        </NavLink>
+                      </li>
+                    </>
                   ) : status === "new" ? (
                     <li className="nav-item">
                       <NavLink to="/owners/gymForm" onClick={closeMenu}>

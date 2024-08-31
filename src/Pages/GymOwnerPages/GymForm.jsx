@@ -17,6 +17,9 @@ const GymForm = () => {
     if (status === "active") {
       navigate("/owners/dashboard");
       toast.error("Not allowed to view this form");
+    } else if (status === "inactive" || status === "rejected") {
+      navigate("/owners/status");
+      toast.error("Not allowed to view this form");
     }
   }, [status]);
 

@@ -16,6 +16,7 @@ import OwnerSignup from "./Pages/GymOwnerPages/Signup";
 import OwnerLogin from "./Pages/GymOwnerPages/Login";
 import OwnerProfile from "./Pages/GymOwnerPages/Profile";
 import GymForm from "./Pages/GymOwnerPages/GymForm";
+import ResubmitForm from "./Pages/GymOwnerPages/ResubmitForm";
 import OwnerSlot from "./Pages/GymOwnerPages/Slot";
 import OwnerDashboard from "./Pages/GymOwnerPages/Dashboard";
 import ApprovalStatus from "./Pages/GymOwnerPages/ApprovalStatus";
@@ -115,6 +116,12 @@ function App() {
                     element={<OwnerProfile />}
                     allowedRoles="owner"
                   />
+                }
+              />
+              <Route
+                path="/owners/resubmit"
+                element={
+                  <PrivateRoute element={<ResubmitForm />} allowedRoles="owner" />
                 }
               />
               <Route

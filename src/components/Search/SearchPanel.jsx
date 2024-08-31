@@ -39,7 +39,7 @@ const SearchPanel = ({
       <div className="flex items-center justify-center">
         <FaLocationArrow className="text-red-500" size={12} />
         <select
-          className="ml-2 text-center text-white rounded-none appearance-none bg-wwbg focus:outline-none"
+          className="px-5 text-white rounded-none appearance-none bg-wwbg focus:outline-none"
           onChange={(e) => onLocationChange(e.target.value)}
         >
           <option value="">Location</option>

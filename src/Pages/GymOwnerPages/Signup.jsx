@@ -118,7 +118,13 @@ const Signup = () => {
                 type="email"
                 id="email"
                 placeholder="abc@example.com"
-                {...register("email", { required: "Email is required" })}
+                {...register("email", {
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: "Invalid email address",
+                  },
+                })}
                 className={`w-full px-3 py-2 border ${
                   errors.email ? "border-red-500" : "border-gray-600"
                 }  bg-wwbg text-white focus:outline-none focus:border-red-500`}

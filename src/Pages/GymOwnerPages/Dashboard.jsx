@@ -4,6 +4,18 @@ import api from "../../api/axios";
 import TableComponent from "../../components/Bookings/TableComponent";
 import { usePagination } from "pagination-react-js";
 import StatsSkeleton from "../../components/Skeletons/StasSkeleton";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setStatsLoadingFalse,
+  setStatsLoadingTrue,
+} from "../../redux/statsSlice";
+import {
+  setTableCompLoadingFalse,
+  setTableCompLoadingTrue,
+} from "../../redux/tableCompSlice";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 
 const Dashboard = () => {
   const [stats, setStats] = useState({
@@ -12,48 +24,67 @@ const Dashboard = () => {
     totalHours: { current: 0, growthPercentage: 0 },
     totalUniqueUsers: { current: 0, growthPercentage: 0 },
   });
-
   const [extensionRequests, setExtensionRequests] = useState([]);
   const [upcomingBookings, setUpcomingBookings] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { status } = useAuth();
 
+  const statsLoading = useSelector(
+    (state) => state.isOwnerDashboardLoading.stats.loading
+  );
+  const tableLoading = useSelector(
+    (state) => state.isOwnerDashboardLoading.tableComp.loading
+  );
+
+  const loading = statsLoading || tableLoading;
+
+  // Checks Owners status and navigate them accordingly
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 4)); // Simulate 4 seconds network delay
-      setLoading(false);
+    if (status === "inactive" || status === "rejected") {
+      navigate("/owners/status");
+      toast.error("Not allowed to view this form");
+    } else if (status === "new") {
+      navigate("/owners/gymForm");
+      toast.error("Not allowed to view this form");
+    }
+  }, [status]);
+
+  // Fetch stats and booking details for the owner
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      dispatch(setStatsLoadingTrue());
+      dispatch(setTableCompLoadingTrue());
+      api
+        .get("/gyms/owners/stats")
+        .then((response) => {
+          setStats(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching stats:", error);
+        })
+        .finally(dispatch(setStatsLoadingFalse()));
+
+      api
+        .get("/gyms/extensions")
+        .then((res) => {
+          setExtensionRequests(res.data.extensionRequests);
+        })
+        .catch((error) => {
+          console.error("Error fetching stats:", error);
+        });
+
+      api
+        .get("/gyms/bookings/upcoming")
+        .then((res) => {
+          setUpcomingBookings(res.data.bookings);
+        })
+        .catch((error) => {
+          console.error("Error fetching stats:", error);
+        })
+        .finally(dispatch(setTableCompLoadingFalse()));
     };
-
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    api
-      .get("/gyms/owners/stats")
-      .then((response) => {
-        setStats(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching stats:", error);
-      });
-
-    api
-      .get("/gyms/extensions")
-      .then((res) => {
-        setExtensionRequests(res.data.extensionRequests);
-      })
-      .catch((error) => {
-        console.error("Error fetching stats:", error);
-      });
-
-    api
-      .get("/gyms/bookings/upcoming")
-      .then((res) => {
-        setUpcomingBookings(res.data.bookings);
-      })
-      .catch((error) => {
-        console.error("Error fetching stats:", error);
-      });
+    fetchDashboard();
   }, []);
 
   const handleApprove = async (request) => {
@@ -152,20 +183,20 @@ const Dashboard = () => {
     );
   };
 
-  // Remove ratings from future bookings
+  // Remove id from future bookings
   const removeUnwantedFromPastbookings = extensionRequests.map(
     ({ _id, ...extensionRequests }) => extensionRequests
   );
 
-  // Remove ratings from future bookings
+  // Remove id from future bookings
   const removeUnwantedFromUpcomingbookings = upcomingBookings.map(
     ({ booking_id, ...upcomingBookings }) => upcomingBookings
   );
 
   return (
     <div>
-      {/* Stats */}
       <div className="px-4 py-8 space-y-6">
+        {/* Stats */}
         {loading ? (
           <StatsSkeleton />
         ) : (

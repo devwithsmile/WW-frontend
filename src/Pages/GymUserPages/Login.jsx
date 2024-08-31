@@ -61,7 +61,20 @@ const Login = () => {
         login(response.data.token);
 
         // console.log('Logged In data : ', response.data)
-        navigate(from, { replace: true });
+        // Set a flag indicating the user has logged in
+        const isFirstTimeUser = localStorage.getItem("firstTimeUser") || true;
+
+        // Redirect based on first-time status
+        if (isFirstTimeUser !== "false") {
+          navigate("/users"); // Redirect to profile for first-time users
+          toast.success("Please fill out your profile details");
+
+          // Update local storage to indicate the user has logged in
+          localStorage.setItem("firstTimeUser", "false");
+        } else {
+          console.log("Im coming here to else part with from", from);
+          navigate(from, { replace: true });
+        }
       }
     } catch (error) {
       console.error("Error during login:", error);
@@ -116,7 +129,13 @@ const Login = () => {
                 type="email"
                 id="email"
                 placeholder="abc@example.com"
-                {...register("email", { required: "Email is required" })}
+                {...register("email", {
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: "Invalid email address",
+                  },
+                })}
                 className={`w-full px-3 py-2 border ${
                   errors.email ? "border-red-500" : "border-gray-600"
                 }  bg-wwbg text-white focus:outline-none focus:border-red-500`}

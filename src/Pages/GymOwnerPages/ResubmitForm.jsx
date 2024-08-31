@@ -5,8 +5,8 @@ import indianPincodes from "indian-pincodes";
 import api from "../../api/axios";
 import dataStates from "../../data/states.json";
 import { toast } from "react-toastify";
-import useAuth from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 
 const GAP_FROM_TOP = 150; // When submitting focusing on input will give 150 gap on top
 // Price-related constants
@@ -28,7 +28,7 @@ const FACILITIES = [
 ];
 
 const states = dataStates;
-const Profile = () => {
+const ResubmitForm = () => {
   const {
     control,
     handleSubmit,
@@ -39,7 +39,6 @@ const Profile = () => {
     getValues,
     formState: { isSubmitting, errors },
   } = useForm();
-  const [initialValues, setInitialValues] = useState([]);
   const [displayValue, setDisplayValue] = useState("");
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
@@ -52,7 +51,10 @@ const Profile = () => {
 
   // Checks Owners status and navigate them accordingly
   useEffect(() => {
-    if (status === "inactive" || status === "rejected") {
+    if (status === "active") {
+      navigate("/owners/dashboard");
+      toast.error("Not allowed to view this form");
+    } else if (status === "inactive") {
       navigate("/owners/status");
       toast.error("Not allowed to view this form");
     } else if (status === "new") {
@@ -92,7 +94,6 @@ const Profile = () => {
             // TODO: TypeError: Failed to execute 'createObjectURL' on 'URL': Overload resolution failed.
             images: gymData.images || [],
           });
-          setInitialValues(gymData);
         }
       } catch (error) {
         console.error("Failed to fetch gym details", error);
@@ -164,21 +165,7 @@ const Profile = () => {
   const onSubmit = async (data) => {
     try {
       // Prepare data to send only modified fields
-      // TODO: Compare the initial data and changed data and send only new changes
-      //   console.log(data)
-      //   console.log(initialValues._id)
-
-      //   const updatedFields = {}
-
-      //   Object.keys(data).forEach((key) => {
-      //     if (data[key] !== initialValues[key]) {
-      //       updatedFields[key] = data[key]
-      //     }
-      //   })
-
-      //   console.log('updatedFields gym data:', updatedFields)
-
-      const response = await api.patch(`/gyms`, data, {
+      const response = await api.patch(`/gyms/resubmit`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -186,18 +173,6 @@ const Profile = () => {
         console.log("response : " + response);
         toast.success("Gym details updated successfully.");
       }
-
-      //   if (Object.keys(updatedFields).length > 0) {
-      // const response = await api.patch(`/gyms`, data, {
-      //   headers: { 'Content-Type': 'multipart/form-data' },
-      // })
-      // if (response.status === 200) {
-      //   console.log('response : ' + response)
-      //   toast.success('Gym details updated successfully.')
-      // }
-      //   } else {
-      // toast.success('No changes detected.')
-      //   }
     } catch (error) {
       console.error("Failed to update gym details", error);
 
@@ -790,4 +765,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default ResubmitForm;

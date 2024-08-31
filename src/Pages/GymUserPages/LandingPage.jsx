@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import landingPageimage from "../../assets/landingPageImage.png";
 import profilePic from "../../assets/profileP.jpg";
 // there is className called width-change in this File. we need to increase its width to make the page more appealing
-
+import imageForlandingPage from '../../assets/images/ownergymform.png'
 function LandingPage() {
   const [loading, setLoading] = useState(true)
   return (
@@ -109,7 +109,7 @@ function LandingPage() {
             </p>
 
             {/* Button For Gym Owner to enroll*/}
-            <div className="flex flex-col md:flex-row items-center justify-between mt-10 lg:flex gap-x-6">
+            <div className="flex flex-col items-center justify-between mt-10 md:flex-row lg:flex gap-x-6">
               <Link to="/owners/register" className="inline-block m-1">
                 <button className="bg-transparent px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-wwred focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 lg:w-full w-40 mb-2 text-center border border-wwred">
                   Enroll Now
@@ -158,6 +158,179 @@ function LandingPage() {
           </div>
         </div>
       </div>
+
+      {/* last section */}
+
+      <section className="pt-20 pb-48">
+        <div className="container px-4 mx-auto">
+          <div className="flex flex-wrap justify-center mb-24 text-center">
+            <div className="w-full px-4 lg:w-6/12">
+              <h2 className="text-4xl font-semibold">
+                Here are our heroes
+              </h2>
+              <p className="m-4 text-lg leading-relaxed text-gray-600">
+                According to the National Oceanic and Atmospheric
+                Administration, Ted, Scambos, NSIDClead scentist, puts the
+                potentially record maximum.
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-wrap">
+            <div className="w-full px-4 mb-12 md:w-6/12 lg:w-3/12 lg:mb-0">
+              <div className="px-6">
+                <img
+                  alt="...image..."
+                  src={imageForlandingPage}
+                  className="max-w-full mx-auto rounded-full shadow-lg"
+                  style={{ maxWidth: "120px" }}
+                />
+                <div className="pt-6 text-center">
+                  <h5 className="text-xl font-bold">
+                    Ryan Tompson
+                  </h5>
+                  <p className="mt-1 text-sm font-semibold text-gray-500 uppercase">
+                    Web Developer
+                  </p>
+                  <div className="mt-6">
+                    <button
+                      className="w-8 h-8 mb-1 mr-1 text-white bg-blue-400 rounded-full outline-none focus:outline-none"
+                      type="button"
+                    >
+                      <i className="fab fa-twitter"></i>
+                    </button>
+                    <button
+                      className="w-8 h-8 mb-1 mr-1 text-white bg-blue-600 rounded-full outline-none focus:outline-none"
+                      type="button"
+                    >
+                      <i className="fab fa-facebook-f"></i>
+                    </button>
+                    <button
+                      className="w-8 h-8 mb-1 mr-1 text-white bg-pink-500 rounded-full outline-none focus:outline-none"
+                      type="button"
+                    >
+                      <i className="fab fa-dribbble"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="w-full px-4 mb-12 md:w-6/12 lg:w-3/12 lg:mb-0">
+              <div className="px-6">
+                <img
+                  alt="..."
+                  src={imageForlandingPage}
+                  className="max-w-full mx-auto rounded-full shadow-lg"
+                  style={{ maxWidth: "120px" }}
+                />
+                <div className="pt-6 text-center">
+                  <h5 className="text-xl font-bold">
+                    Romina Hadid
+                  </h5>
+                  <p className="mt-1 text-sm font-semibold text-gray-500 uppercase">
+                    Marketing Specialist
+                  </p>
+                  <div className="mt-6">
+                    <button
+                      className="w-8 h-8 mb-1 mr-1 text-white bg-red-600 rounded-full outline-none focus:outline-none"
+                      type="button"
+                    >
+                      <i className="fab fa-google"></i>
+                    </button>
+                    <button
+                      className="w-8 h-8 mb-1 mr-1 text-white bg-blue-600 rounded-full outline-none focus:outline-none"
+                      type="button"
+                    >
+                      <i className="fab fa-facebook-f"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="w-full px-4 mb-12 md:w-6/12 lg:w-3/12 lg:mb-0">
+              <div className="px-6">
+                <img
+                  alt="..."
+                  src={imageForlandingPage}
+                  className="max-w-full mx-auto rounded-full shadow-lg"
+                  style={{ maxWidth: "120px" }}
+                />
+                <div className="pt-6 text-center">
+                  <h5 className="text-xl font-bold">
+                    Alexa Smith
+                  </h5>
+                  <p className="mt-1 text-sm font-semibold text-gray-500 uppercase">
+                    UI/UX Designer
+                  </p>
+                  <div className="mt-6">
+                    <button
+                      className="w-8 h-8 mb-1 mr-1 text-white bg-red-600 rounded-full outline-none focus:outline-none"
+                      type="button"
+                    >
+                      <i className="fab fa-google"></i>
+                    </button>
+                    <button
+                      className="w-8 h-8 mb-1 mr-1 text-white bg-blue-400 rounded-full outline-none focus:outline-none"
+                      type="button"
+                    >
+                      <i className="fab fa-twitter"></i>
+                    </button>
+                    <button
+                      className="w-8 h-8 mb-1 mr-1 text-white bg-gray-800 rounded-full outline-none focus:outline-none"
+                      type="button"
+                    >
+                      <i className="fab fa-instagram"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="w-full px-4 mb-12 md:w-6/12 lg:w-3/12 lg:mb-0">
+              <div className="px-6">
+                <img
+                  alt="..."
+                  src={imageForlandingPage}
+                  className="max-w-full mx-auto rounded-full shadow-lg"
+                  style={{ maxWidth: "120px" }}
+                />
+                <div className="pt-6 text-center">
+                  <h5 className="text-xl font-bold">
+                    Jenna Kardi
+                  </h5>
+                  <p className="mt-1 text-sm font-semibold text-gray-500 uppercase">
+                    Founder and CEO
+                  </p>
+                  <div className="mt-6">
+                    <button
+                      className="w-8 h-8 mb-1 mr-1 text-white bg-pink-500 rounded-full outline-none focus:outline-none"
+                      type="button"
+                    >
+                      <i className="fab fa-dribbble"></i>
+                    </button>
+                    <button
+                      className="w-8 h-8 mb-1 mr-1 text-white bg-red-600 rounded-full outline-none focus:outline-none"
+                      type="button"
+                    >
+                      <i className="fab fa-google"></i>
+                    </button>
+                    <button
+                      className="w-8 h-8 mb-1 mr-1 text-white bg-blue-400 rounded-full outline-none focus:outline-none"
+                      type="button"
+                    >
+                      <i className="fab fa-twitter"></i>
+                    </button>
+                    <button
+                      className="w-8 h-8 mb-1 mr-1 text-white bg-gray-800 rounded-full outline-none focus:outline-none"
+                      type="button"
+                    >
+                      <i className="fab fa-instagram"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

@@ -48,7 +48,7 @@ color {
 @media screen and (max-width:940px) {
     .header {
         max-width: 100%;
-        background-color: rgba(0, 0, 0, .4);
+        background-color: #171717;
     }
 
     .header .navbar {

@@ -16,17 +16,6 @@ const defaultCenter = {
 };
 
 const CurrentLocationMap = ({ location }) => {
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 4000)); // Simulate 4 seconds network delay
-      setLoading(false);
-    };
-
-    fetchData();
-  }, []);
-
 
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: config.GMAP_API,
@@ -37,12 +26,13 @@ const CurrentLocationMap = ({ location }) => {
   }
 
   if (!isLoaded) {
-    return <div>Loading Map...</div>;
+    return <div><CurrentLocationMapSkeleton /></div>;
   }
+
 
   return (
     <>
-      {loading ? (<CurrentLocationMapSkeleton />) : (<div className='w-auto p-4 shadow-lg md:p-8'>
+      <div className='w-auto p-4 shadow-lg md:p-8'>
         <div className='mb-4 font-bold text-white'>Location</div>
         <div className='w-full h-64 md:h-80'>
           <GoogleMap
@@ -61,7 +51,7 @@ const CurrentLocationMap = ({ location }) => {
             )}
           </GoogleMap>
         </div>
-      </div>)}
+      </div>
 
     </>
 

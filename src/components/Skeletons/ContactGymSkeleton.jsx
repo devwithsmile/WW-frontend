@@ -6,7 +6,7 @@ import 'react-loading-skeleton/dist/skeleton.css';
 const ContactGYMSkeleton = () => {
   return (
     <div
-      className='w-auto p-4 shadow-lg md:p-8'
+      className='w-auto p-4 overflow-hidden shadow-lg md:p-8'
     >
       <div className='flex items-center mb-4 ml-4'>
         <Skeleton
@@ -18,7 +18,7 @@ const ContactGYMSkeleton = () => {
           className='mr-2'
         />
         <Skeleton
-          width={300}
+          width={250}
           baseColor='#171717'
           highlightColor='#2e2727'
           className='font-medium text-gray-300'
@@ -27,7 +27,6 @@ const ContactGYMSkeleton = () => {
       </div>
       <div className='flex items-center ml-4'>
         <Skeleton
-          circle
           height={24}
           width={24}
           baseColor='#171717'
@@ -35,7 +34,7 @@ const ContactGYMSkeleton = () => {
           className='mr-2'
         />
         <Skeleton
-          width={300}
+          width={250}
           baseColor='#171717'
           highlightColor='#2e2727'
           className='font-medium text-gray-300'

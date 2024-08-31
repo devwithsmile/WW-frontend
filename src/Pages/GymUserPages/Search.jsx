@@ -8,7 +8,6 @@ import api from "../../api/axios";
 import GymCardSkeleton from "../../components/Skeletons/GymCardSkeleton";
 
 
-const simulateDelay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const Search = () => {
   const [gymsToRender, setGymsToRender] = useState([]);
@@ -35,16 +34,43 @@ const Search = () => {
     sort_by: sort, // Update to match the API sorting parameter
   };
 
-  if (!location) {
+console.log(gymsToRender);
+
+  useEffect(() => {
+    // Check if Geolocation is supported
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setCoordinates({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+
+          console.log(coordinates.latitude);
+          console.log(coordinates.longitude);
+
+        },
+        (error) => {
+          setError(error.message);
+        }
+      );
+    } else {
+      setError('Geolocation is not supported by this browser.');
+    }
+  }, []); 
+
+
+  if (!coordinates) {
     params.latitude = coordinates.latitude ?? 18.630614;
     params.longitude = coordinates.longitude ?? 73.8152839;
+    console.log("default location used");
+    
   }
 
   const { data, isFetchingNextPage, fetchNextPage, hasNextPage, isLoading } =
     useInfiniteQuery({
       queryKey: ["gyms", search, filters, location, sort],
       queryFn: async ({ pageParam = 1 }) => {
-        await simulateDelay(4000); // 4-second delay
         const res = await api.get("/gyms", { params: params });
         console.log(res);
 
@@ -54,6 +80,8 @@ const Search = () => {
         if (lastPage.page < lastPage.totalPages) {
           return lastPage.page + 1;
         }
+        console.log(lastPage);
+        
         return undefined;
       },
     });
@@ -135,7 +163,7 @@ const Search = () => {
             />
           ))}
         <div ref={ref} />
-        {isFetchingNextPage && <div>Loading more gyms...</div>}
+        {isFetchingNextPage && <div><GymCardSkeleton/></div>}
       </div>
     </div>
   );

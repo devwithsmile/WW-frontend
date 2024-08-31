@@ -1,19 +1,11 @@
-import React, { useState, useEffect } from 'react'
-import AboutSectionSkeleton from '../Skeletons/AboutSectionSkeleton'
+import React, { useState } from 'react'
+
 
 function AboutSection({ desc = 'description here' }) {
   const [isExpanded, setIsExpanded] = useState(false)
-  const [loading, setLoading] = useState(true) // State to handle loading
   const maxLength = 500 // Number of characters to truncate at
 
-  useEffect(() => {
-    // Simulate network delay
-    const timer = setTimeout(() => {
-      setLoading(false)
-    }, 4000) // 4 seconds delay
 
-    return () => clearTimeout(timer)
-  }, [])
 
   const toggleReadMore = () => {
     setIsExpanded(!isExpanded)
@@ -21,10 +13,6 @@ function AboutSection({ desc = 'description here' }) {
 
   // Determine whether to show the "Read More" button
   const shouldShowButton = desc.length > maxLength
-
-  if (loading) {
-    return <AboutSectionSkeleton /> // Render skeleton while loading
-  }
 
   return (
     <div className='w-full p-4 mt-4 shadow-lg min-h-1/2 md:p-8'>

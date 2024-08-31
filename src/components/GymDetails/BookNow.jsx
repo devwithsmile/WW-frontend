@@ -7,7 +7,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import useAuth from "../../hooks/useAuth.jsx";
 import api from "../../api/axios.js";
-import BookNowSkeleton from "../Skeletons/BookNowSkeleton.jsx";
 
 function BookNow({ price, gym_id, schedule }) {
   const format = "HH:mm";
@@ -24,24 +23,12 @@ function BookNow({ price, gym_id, schedule }) {
       duration: 60,
     },
   });
-  const [loading, setLoading] = useState(true); // State to manage loading
 
   // Watch for changes in date, slot, and time
   const watchedDate = watch("date");
   const watchedSlot = watch("slot");
   const watchedTime = watch("time");
   const watchedDuration = watch("duration");
-
-  // Below was the code before skeleton
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate 3 seconds network delay
-      setLoading(false);
-    };
-
-    fetchData();
-  }, []);
 
   // Update slots when the date changes
   useEffect(() => {
@@ -50,7 +37,6 @@ function BookNow({ price, gym_id, schedule }) {
     }
   }, [watchedDate]);
 
-  // Simulate network delay and update available slots
   // Update time options and maximum duration when the slot changes
   useEffect(() => {
     if (watchedSlot) {
@@ -233,7 +219,10 @@ function BookNow({ price, gym_id, schedule }) {
       if (error.response && error.response.data.errors) {
         const { errors } = error.response.data;
 
-        if (errors.global) {
+        if (errors.global === "User profile incomplete") {
+          navigate("/users");
+          toast.error("Please fill your full name and phone number.");
+        } else {
           toast.error(errors.global);
         }
       }
@@ -242,164 +231,160 @@ function BookNow({ price, gym_id, schedule }) {
 
   return (
     <div>
-      {loading ? (
-        <BookNowSkeleton /> // Show skeleton loader when loading
-      ) : (
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="p-4 space-y-6 shadow-lg md:p-8"
-        >
-          {/* Date */}
-          <div className="flex flex-col items-start space-y-2">
-            <label className="mb-1 text-sm font-medium">Date:</label>
-            <Space direction="vertical" style={{ width: "100%" }}>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="p-4 space-y-6 shadow-lg md:p-8"
+      >
+        {/* Date */}
+        <div className="flex flex-col items-start space-y-2">
+          <label className="mb-1 text-sm font-medium">Date:</label>
+          <Space direction="vertical" style={{ width: "100%" }}>
+            <Controller
+              name="date"
+              control={control}
+              render={({ field }) => (
+                <DatePicker
+                  {...field}
+                  className="w-full px-3 py-2 rounded-none bg-wwbg !text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 border border-red-500 hover:bg-wwbg"
+                  style={{ width: "100%" }}
+                  disabledDate={disableDate}
+                  onChange={handleDateChange}
+                />
+              )}
+            />
+          </Space>
+        </div>
+
+        {/* Slots */}
+        {slots.length > 0 ? (
+          <div className="flex flex-col mb-6 lg:mb-0">
+            <label className="mb-1 text-sm font-medium">Select Slot:</label>
+            <Controller
+              name="slot"
+              control={control}
+              render={({ field }) => (
+                <select
+                  {...field}
+                  className="w-full px-3 py-2 text-center text-white border border-red-500 rounded-none bg-wwbg focus:outline-none focus:border-red-500"
+                  onChange={handleSlotChange}
+                >
+                  {slots.map((slot, index) => (
+                    <option key={index} value={`${slot.from} - ${slot.to}`}>
+                      {`${slot.from} - ${slot.to}`}
+                    </option>
+                  ))}
+                </select>
+              )}
+            />
+          </div>
+        ) : (
+          <div className="flex flex-col mb-6 lg:mb-0">
+            <label className="mb-1 text-sm font-medium">
+              No Slots Available. Please select a different date.
+            </label>
+          </div>
+        )}
+
+        {/* Time */}
+        {slots.length > 0 && (
+          <div className="flex-col mb-6 lg:mb-0">
+            <label className="mb-1 text-sm font-medium">Start Time:</label>
+            <Controller
+              name="time"
+              control={control}
+              render={({ field }) => (
+                <select
+                  {...field}
+                  className="w-full px-3 py-2 text-center text-white border border-red-500 rounded-none bg-wwbg focus:outline-none focus:border-red-500"
+                  onChange={handleStartTimeChange}
+                >
+                  {generateAvailableTimes(
+                    getValues("slot").split(" - ")[0],
+                    getValues("slot").split(" - ")[1]
+                  ).map((time, index) => (
+                    <option key={index} value={time}>
+                      {time}
+                    </option>
+                  ))}
+                </select>
+              )}
+            />
+          </div>
+        )}
+
+        {/* Duration */}
+        {getValues("time") && (
+          <div className="flex flex-col">
+            <label className="mb-1 text-sm font-medium">Duration:</label>
+            <div className="flex items-center justify-center space-x-2">
+              <button
+                type="button"
+                onClick={decreaseDuration}
+                className="px-3 py-1.5 text-lg font-bold border border-red-900"
+              >
+                -
+              </button>
               <Controller
-                name="date"
+                name="duration"
                 control={control}
                 render={({ field }) => (
-                  <DatePicker
+                  <input
                     {...field}
-                    className="w-full px-3 py-2 rounded-none bg-wwbg !text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 border border-red-500 hover:bg-wwbg"
-                    style={{ width: "100%" }}
-                    disabledDate={disableDate}
-                    onChange={handleDateChange}
+                    type="text"
+                    value={formatDuration(field.value)} // Show duration in hours
+                    readOnly
+                    className="w-full px-3 py-2 text-center text-white border border-red-500 rounded-none cursor-not-allowed bg-wwbg focus:outline-none focus:border-red-500"
                   />
                 )}
               />
-            </Space>
+              <button
+                type="button"
+                onClick={increaseDuration}
+                className="px-3 py-1.5 text-lg font-bold border border-red-900"
+              >
+                +
+              </button>
+            </div>
           </div>
+        )}
 
-          {/* Slots */}
-          {slots.length > 0 ? (
-            <div className="flex flex-col mb-6 lg:mb-0">
-              <label className="mb-1 text-sm font-medium">Select Slot:</label>
-              <Controller
-                name="slot"
-                control={control}
-                render={({ field }) => (
-                  <select
-                    {...field}
-                    className="w-full px-3 py-2 text-center text-white border border-red-500 rounded-none bg-wwbg focus:outline-none focus:border-red-500"
-                    onChange={handleSlotChange}
-                  >
-                    {slots.map((slot, index) => (
-                      <option key={index} value={`${slot.from} - ${slot.to}`}>
-                        {`${slot.from} - ${slot.to}`}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              />
-            </div>
-          ) : (
-            <div className="flex flex-col mb-6 lg:mb-0">
-              <label className="mb-1 text-sm font-medium">
-                No Slots Available. Please select a different date.
-              </label>
-            </div>
-          )}
-
-          {/* Time */}
-          {slots.length > 0 && (
-            <div className="flex-col mb-6 lg:mb-0">
-              <label className="mb-1 text-sm font-medium">Start Time:</label>
-              <Controller
-                name="time"
-                control={control}
-                render={({ field }) => (
-                  <select
-                    {...field}
-                    className="w-full px-3 py-2 text-center text-white border border-red-500 rounded-none bg-wwbg focus:outline-none focus:border-red-500"
-                    onChange={handleStartTimeChange}
-                  >
-                    {generateAvailableTimes(
-                      getValues("slot").split(" - ")[0],
-                      getValues("slot").split(" - ")[1]
-                    ).map((time, index) => (
-                      <option key={index} value={time}>
-                        {time}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              />
-            </div>
-          )}
-
-          {/* Duration */}
-          {getValues("time") && (
-            <div className="flex flex-col">
-              <label className="mb-1 text-sm font-medium">Duration:</label>
-              <div className="flex items-center justify-center space-x-2">
-                <button
-                  type="button"
-                  onClick={decreaseDuration}
-                  className="px-3 py-1.5 text-lg font-bold border border-red-900"
-                >
-                  -
-                </button>
-                <Controller
-                  name="duration"
-                  control={control}
-                  render={({ field }) => (
-                    <input
-                      {...field}
-                      type="text"
-                      value={formatDuration(field.value)} // Show duration in hours
-                      readOnly
-                      className="w-full px-3 py-2 text-center text-white border border-red-500 rounded-none cursor-not-allowed bg-wwbg focus:outline-none focus:border-red-500"
-                    />
-                  )}
-                />
-                <button
-                  type="button"
-                  onClick={increaseDuration}
-                  className="px-3 py-1.5 text-lg font-bold border border-red-900"
-                >
-                  +
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Price */}
-          <div>
-            {/* Price/hour */}
-            <div className="flex items-center justify-between">
-              <p className="text-base text-white">Price</p>
-              <div className="flex items-center">
-                <PiCurrencyInrLight size={16} />
-                <span>{price} /hr</span>
-              </div>
-            </div>
-
-            {/* Total Price */}
-            <div className="flex items-center justify-between">
-              <p className="text-lg font-bold text-white">Total</p>
-              <div className="flex items-center">
-                <PiCurrencyInrLight size={16} />
-                <span className="text-lg font-bold text-white">
-                  {(price * (getValues("duration") / 60)).toFixed(2)}
-                </span>
-              </div>
+        {/* Price */}
+        <div>
+          {/* Price/hour */}
+          <div className="flex items-center justify-between">
+            <p className="text-base text-white">Price</p>
+            <div className="flex items-center">
+              <PiCurrencyInrLight size={16} />
+              <span>{price} /hr</span>
             </div>
           </div>
 
-          <div className="flex justify-center w-full">
-            <button
-              type="submit"
-              className={`w-full px-4 py-2.5 text-sm font-semibold text-white shadow-sm ${
-                slots.length > 0
-                  ? "bg-wwred hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-                  : "bg-transparent text-red-500 border border-red-500 cursor-not-allowed" // Styles for disabled state
-              }`}
-              disabled={slots.length === 0}
-            >
-              Book Now
-            </button>
+          {/* Total Price */}
+          <div className="flex items-center justify-between">
+            <p className="text-lg font-bold text-white">Total</p>
+            <div className="flex items-center">
+              <PiCurrencyInrLight size={16} />
+              <span className="text-lg font-bold text-white">
+                {(price * (getValues("duration") / 60)).toFixed(2)}
+              </span>
+            </div>
           </div>
-        </form>
-      )}
+        </div>
+
+        <div className="flex justify-center w-full">
+          <button
+            type="submit"
+            className={`w-full px-4 py-2.5 text-sm font-semibold text-white shadow-sm ${
+              slots.length > 0
+                ? "bg-wwred hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                : "bg-transparent text-red-500 border border-red-500 cursor-not-allowed" // Styles for disabled state
+            }`}
+            disabled={slots.length === 0}
+          >
+            Book Now
+          </button>
+        </div>
+      </form>
     </div>
   );
 }

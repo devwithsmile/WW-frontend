@@ -309,7 +309,6 @@ const GymForm2 = ({ onSubmit, initialData, onPrevious }) => {
                     <input
                       {...field}
                       onChange={(e) => {
-                        const val = e.target.value;
                         field.onChange(e);
                         handlePincodeChange();
                       }}

@@ -6,6 +6,8 @@ import { MdOutlineAddBox } from "react-icons/md";
 import dayjs from "dayjs";
 import { toast } from "react-toastify";
 import api from "../../api/axios";
+import { useNavigate } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 
 const daysOfWeek = [
   "Sunday",
@@ -39,13 +41,26 @@ const Slot = () => {
       frequency: "weekly",
     },
   });
-
   const format = "HH:mm";
   const [selectedDates, setSelectedDates] = useState([]);
+  const navigate = useNavigate();
+  const { status } = useAuth();
 
+  // Watch fields
   const selectedDays = watch("selectedDays");
   const times = watch("times");
   const frequency = watch("frequency");
+
+  // Checks Owners status and navigate them accordingly
+  useEffect(() => {
+    if (status === "inactive" || status === "rejected") {
+      navigate("/owners/status");
+      toast.error("Not allowed to view this form");
+    } else if (status === "new") {
+      navigate("/owners/gymForm");
+      toast.error("Not allowed to view this form");
+    }
+  }, [status]);
 
   // Set focus when required field is not there
   useEffect(() => {

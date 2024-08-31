@@ -3,7 +3,7 @@ import React from 'react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
-const TableComponentSkeleton = ({ columns = 3, rows = 5 }) => {
+const TableComponentSkeleton = ({  rows = 3, columns = 5, }) => {
   return (
     <div className="overflow-auto bg-wwpopdiv">
       <table className="min-w-full divide-y divide-red-700">
