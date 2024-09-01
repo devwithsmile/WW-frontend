@@ -3,9 +3,6 @@ import imageforPage from "../../assets/images/signin.jpg";
 import api from "../../api/axios";
 import moment from "moment";
 import { toast } from "react-toastify";
-import TodaysBookingSkeleton from "../Skeletons/TodaysBookingSkeleton";
-import { useDispatch, useSelector } from "react-redux";
-import { setTodayBookingLoadingFalse } from "../../redux/todayBookingSlice";
 
 function TodaysBookingSection({ todayBookings = [] }) {
   const [gymImage, setGymImage] = useState(null);

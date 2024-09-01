@@ -7,8 +7,6 @@ import "react-loading-skeleton/dist/skeleton.css";
 import api from "../../api/axios";
 import GymCardSkeleton from "../../components/Skeletons/GymCardSkeleton";
 
-
-
 const Search = () => {
   const [gymsToRender, setGymsToRender] = useState([]);
   const [displayedGyms, setDisplayedGyms] = useState([]);
@@ -23,18 +21,11 @@ const Search = () => {
     time: "",
     rating: "",
   });
-  const [sort, setSort] = useState(""); // State for sorting criteria
+  const [sort, setSort] = useState("distance"); // Default to "distance"
 
   const { ref, inView } = useInView({
     triggerOnce: false,
   });
-
-  const params = {
-    city: location,
-    sort_by: sort, // Update to match the API sorting parameter
-  };
-
-console.log(gymsToRender);
 
   useEffect(() => {
     // Check if Geolocation is supported
@@ -45,43 +36,43 @@ console.log(gymsToRender);
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
           });
-
-          console.log(coordinates.latitude);
-          console.log(coordinates.longitude);
-
         },
         (error) => {
           setError(error.message);
         }
       );
     } else {
-      setError('Geolocation is not supported by this browser.');
+      setError("Geolocation is not supported by this browser.");
     }
-  }, []); 
+  }, []);
 
+  const buildParams = () => {
+    const params = {
+      sort_by: sort, // Sorting criteria
+    };
 
-  if (!coordinates) {
-    params.latitude = coordinates.latitude ?? 18.630614;
-    params.longitude = coordinates.longitude ?? 73.8152839;
-    console.log("default location used");
-    
-  }
+    if (coordinates.latitude && coordinates.longitude) {
+      params.latitude = coordinates.latitude;
+      params.longitude = coordinates.longitude;
+    } else if (location) {
+      params.city = location;
+    }
+
+    return params;
+  };
 
   const { data, isFetchingNextPage, fetchNextPage, hasNextPage, isLoading } =
     useInfiniteQuery({
       queryKey: ["gyms", search, filters, location, sort],
       queryFn: async ({ pageParam = 1 }) => {
+        const params = buildParams();
         const res = await api.get("/gyms", { params: params });
-        console.log(res);
-
         return res.data;
       },
       getNextPageParam: (lastPage) => {
         if (lastPage.page < lastPage.totalPages) {
           return lastPage.page + 1;
         }
-        console.log(lastPage);
-        
         return undefined;
       },
     });
@@ -108,18 +99,7 @@ console.log(gymsToRender);
     } else {
       setDisplayedGyms(gymsToRender);
     }
-  }, [search, gymsToRender]);
-
-  useEffect(() => {
-    if (search) {
-      const filteredGyms = gymsToRender.filter((gym) =>
-        gym.gym_name.toLowerCase().includes(search.toLowerCase())
-      );
-      setDisplayedGyms(filteredGyms);
-    } else {
-      setDisplayedGyms(gymsToRender);
-    }
-  }, [sort, gymsToRender]);
+  }, [sort, gymsToRender, search]);
 
   const handleLocationChange = (newLocation) => {
     setLocation(newLocation);
@@ -146,24 +126,28 @@ console.log(gymsToRender);
         onLocationChange={handleLocationChange}
         onSearchChange={handleSearchChange}
         onFilterChange={handleFilterChange}
-        onSortChange={handleSortChange} // Pass the sort handler to navbar
+        onSortChange={handleSortChange}
       />
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 md:px-6">
         {isLoading || gymsToRender.length === 0
           ? Array(6)
-            .fill(null)
-            .map((_, index) => <GymCardSkeleton key={index} />)
+              .fill(null)
+              .map((_, index) => <GymCardSkeleton key={index} />)
           : displayedGyms.map((gym) => (
-            <GymCard
-              key={gym._id}
-              gymId={gym._id}
-              gymName={gym.gym_name}
-              imageSrc={gym.images[0]}
-              rating={gym.average_rating}
-            />
-          ))}
+              <GymCard
+                key={gym._id}
+                gymId={gym._id}
+                gymName={gym.gym_name}
+                imageSrc={gym.images[0]}
+                rating={gym.average_rating}
+              />
+            ))}
         <div ref={ref} />
-        {isFetchingNextPage && <div><GymCardSkeleton/></div>}
+        {isFetchingNextPage && (
+          <div>
+            <GymCardSkeleton />
+          </div>
+        )}
       </div>
     </div>
   );

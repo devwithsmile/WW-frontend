@@ -17,8 +17,8 @@ const SearchPanel = ({
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const response = await api.get("/gyms/cities"); // Adjust the endpoint as needed
-        setCities(response.data); // Assuming response.data is the array of cities
+        const response = await api.get("/gyms/cities"); 
+        setCities(response.data); 
 
         console.log(response.data);
       } catch (error) {
@@ -67,7 +67,7 @@ const SearchPanel = ({
         <div className="flex space-x-4">
           <button
             onClick={() => handleSortClick("distance")}
-            className="flex justify-center items-center w-[7.5rem] md:w-full bg-wwbg px-4 bg-transparent py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 text-center border border-wwred"
+            className="flex  justify-center items-center w-[7.5rem] md:w-full bg-wwbg px-4 bg-transparent py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 text-center border border-wwred"
           >
             <RiPinDistanceLine className="mr-2" /> Distance
           </button>

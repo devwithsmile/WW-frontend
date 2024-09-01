@@ -35,7 +35,7 @@ function Home() {
     } else {
       setError('Geolocation is not supported by this browser.');
     }
-  }, []); // Empty dependency array ensures this runs only once
+  }, []); 
 
   useEffect(() => {
     if (location.lat !== null && location.lng !== null) {

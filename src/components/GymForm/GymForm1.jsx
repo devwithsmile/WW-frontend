@@ -85,9 +85,8 @@ const GymForm1 = ({ onSubmit, initialData }) => {
                         "Full name should only contain letters and spaces",
                     },
                   })}
-                  className={`w-full px-3 py-2 border ${
-                    errors.fullName ? "border-red-500" : "border-gray-600"
-                  } bg-wwbg text-white focus:outline-none focus:border-red-500`}
+                  className={`w-full px-3 py-2 border ${errors.fullName ? "border-red-500" : "border-gray-600"
+                    } bg-wwbg text-white focus:outline-none focus:border-red-500`}
                 />
                 {errors.fullName && (
                   <p className="mt-1 text-sm text-red-500">
@@ -118,9 +117,8 @@ const GymForm1 = ({ onSubmit, initialData }) => {
                         "Invalid contact number format. Must be 10 digits.",
                     },
                   })}
-                  className={`w-full px-3 py-2 border ${
-                    errors.contactInfo ? "border-red-500" : "border-gray-600"
-                  } bg-wwbg text-white focus:outline-none focus:border-red-500`}
+                  className={`w-full px-3 py-2 border ${errors.contactInfo ? "border-red-500" : "border-gray-600"
+                    } bg-wwbg text-white focus:outline-none focus:border-red-500`}
                 />
                 {errors.contactInfo && (
                   <p className="mt-1 text-sm text-red-500">
@@ -161,9 +159,8 @@ const GymForm1 = ({ onSubmit, initialData }) => {
                         "Gym name should only contain letters, numbers, and spaces",
                     },
                   })}
-                  className={`w-full px-3 py-2 border ${
-                    errors.gymName ? "border-red-500" : "border-gray-600"
-                  } bg-wwbg text-white focus:outline-none focus:border-red-500`}
+                  className={`w-full px-3 py-2 border ${errors.gymName ? "border-red-500" : "border-gray-600"
+                    } bg-wwbg text-white focus:outline-none focus:border-red-500`}
                 />
                 {errors.gymName && (
                   <p className="mt-1 text-sm text-red-500">
@@ -187,13 +184,12 @@ const GymForm1 = ({ onSubmit, initialData }) => {
                   {...register("upiId", {
                     required: "UPI ID is required",
                     pattern: {
-                      value: /^[a-zA-Z0-9.-]{2, 256}@[a-zA-Z]{2, 64}$/,
-                      message: "Invalid UPI ID format",
+                      value: /^(?=.{5,})([a-zA-Z0-9]+)@([a-zA-Z]{3,})$/,
+                      message: "Invalid UPI ID format. Must be at least 5 characters long, contain '@', and have at least 3 letters after '@'.",
                     },
                   })}
-                  className={`w-full px-3 py-2 border ${
-                    errors.upiId ? "border-red-500" : "border-gray-600"
-                  } bg-wwbg text-white focus:outline-none focus:border-red-500`}
+                  className={`w-full px-3 py-2 border ${errors.upiId ? "border-red-500" : "border-gray-600"
+                    } bg-wwbg text-white focus:outline-none focus:border-red-500`}
                 />
                 {errors.upiId && (
                   <p className="mt-1 text-sm text-red-500">
@@ -222,9 +218,8 @@ const GymForm1 = ({ onSubmit, initialData }) => {
                       message: "Invalid GST Number format",
                     },
                   })}
-                  className={`w-full px-3 py-2 border ${
-                    errors.gstNumber ? "border-red-500" : "border-gray-600"
-                  } bg-wwbg text-white focus:outline-none focus:border-red-500`}
+                  className={`w-full px-3 py-2 border ${errors.gstNumber ? "border-red-500" : "border-gray-600"
+                    } bg-wwbg text-white focus:outline-none focus:border-red-500`}
                 />
                 {errors.gstNumber && (
                   <p className="mt-1 text-sm text-red-500">
