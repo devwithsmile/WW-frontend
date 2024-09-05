@@ -3,10 +3,10 @@ import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { FcGoogle } from "react-icons/fc";
 import { IoCloseSharp } from "react-icons/io5";
 import signup_img from "../../assets/images/signup.jpg";
 import api from "../../api/axios.js";
+import GoogleLoginButton from "../../components/GoogleLoginButton.jsx";
 
 const Register = () => {
   const {
@@ -45,16 +45,21 @@ const Register = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await api.post(
-        `/api/auth/register`,
-        {
+      let body = data;
+      if (data?.googleData) {
+        body = {
+          googleAccessToken: data.googleData,
+        };
+      } else {
+        body = {
           email: data.email,
           password: data.password,
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+        };
+      }
+
+      const response = await api.post(`/api/auth/register`, body, {
+        headers: { "Content-Type": "application/json" },
+      });
 
       // Handle successful login
       if (response.status === 200) {
@@ -261,10 +266,7 @@ const Register = () => {
             <div className="flex-grow border-t border-red-600"></div>
           </div>
 
-          <button className="w-full flex items-center justify-center bg-transparent py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-wwred focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 md:w-full mb-2 text-center border border-wwred">
-            <FcGoogle className="w-6 h-6 mr-2" alt="Google Logo" />
-            Continue with Google
-          </button>
+          <GoogleLoginButton onSubmit={onSubmit} />
         </div>
       </div>
     </div>

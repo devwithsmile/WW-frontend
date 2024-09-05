@@ -6,6 +6,8 @@ import SearchPanel from "../../components/Search/SearchPanel";
 import "react-loading-skeleton/dist/skeleton.css";
 import api from "../../api/axios";
 import GymCardSkeleton from "../../components/Skeletons/GymCardSkeleton";
+import { debounce } from "lodash";
+import { toast } from "react-toastify";
 
 const Search = () => {
   const [gymsToRender, setGymsToRender] = useState([]);
@@ -14,75 +16,91 @@ const Search = () => {
   const [search, setSearch] = useState("");
   const [coordinates, setCoordinates] = useState({ latitude: null, longitude: null });
   const [error, setError] = useState(null);
+  const [sort, setSort] = useState("");
 
-  const [filters, setFilters] = useState({
-    distance: "",
-    price: "",
-    time: "",
-    rating: "",
-  });
-  const [sort, setSort] = useState("distance"); // Default to "distance"
+  const { ref, inView } = useInView({ triggerOnce: false });
 
-  const { ref, inView } = useInView({
-    triggerOnce: false,
-  });
-
+  // Get user's current coordinates
   useEffect(() => {
-    // Check if Geolocation is supported
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setCoordinates({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          });
-        },
-        (error) => {
-          setError(error.message);
-        }
-      );
-    } else {
-      setError("Geolocation is not supported by this browser.");
-    }
+    const getLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setCoordinates({
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+            });
+          },
+
+        );
+      } else {
+        setError("Geolocation is not supported by this browser.");
+      }
+    };
+    getLocation();
   }, []);
 
-  const buildParams = () => {
-    const params = {
-      sort_by: sort, // Sorting criteria
-    };
-
+  // Fetch gyms based on available parameters
+  const fetchGyms = async ({ pageParam = 1 }) => {
+    const params = {};
+    if (location) {
+      params.city = location
+    }
+  
+    // Use coordinates as default if available
     if (coordinates.latitude && coordinates.longitude) {
       params.latitude = coordinates.latitude;
       params.longitude = coordinates.longitude;
     } else if (location) {
       params.city = location;
     }
-
-    return params;
+  
+    // Add sorting criteria if provided
+    if (sort) {
+      params.sort_by = sort;
+    }
+  
+    // Include the page parameter
+    params.page = pageParam;
+  
+    const res = await api.get("/gyms", { params });
+  
+    // Log total pages and current page number
+    console.log(`Total Pages: ${res.data.totalPages}, Current Page: ${pageParam}`);
+  
+    return res.data;
   };
 
+  // Debounced search handler
+  const debouncedSearch = debounce((value) => {
+    setSearch(value);
+  }, 300);
+
+  // Handle sort change
+  const handleSortChange = (sortCriteria) => {
+    if (sortCriteria === "distance" && !coordinates.latitude && !coordinates.longitude) {
+      toast.error("Please allow location  sort by distance.")
+      return;
+    }
+    setSort(sortCriteria);
+  };
+
+  // Use React Query's useInfiniteQuery for API calls
   const { data, isFetchingNextPage, fetchNextPage, hasNextPage, isLoading } =
     useInfiniteQuery({
-      queryKey: ["gyms", search, filters, location, sort],
-      queryFn: async ({ pageParam = 1 }) => {
-        const params = buildParams();
-        const res = await api.get("/gyms", { params: params });
-        return res.data;
-      },
-      getNextPageParam: (lastPage) => {
-        if (lastPage.page < lastPage.totalPages) {
-          return lastPage.page + 1;
-        }
-        return undefined;
-      },
+      queryKey: ["gyms", search, sort, location, coordinates],
+      queryFn: fetchGyms,
+      getNextPageParam: (lastPage) => (lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined),
     });
 
+  // Fetch the next page when the inView component comes into view
   useEffect(() => {
     if (inView && hasNextPage) {
       fetchNextPage();
     }
   }, [inView, hasNextPage, fetchNextPage]);
 
+  // Update gyms to render when new data is fetched
   useEffect(() => {
     if (data) {
       const newGyms = data.pages.flatMap((page) => page.gyms);
@@ -90,34 +108,22 @@ const Search = () => {
     }
   }, [data]);
 
+  // Filter gyms based on the search input
   useEffect(() => {
-    if (search) {
-      const filteredGyms = gymsToRender.filter((gym) =>
-        gym.gym_name.toLowerCase().includes(search.toLowerCase())
-      );
-      setDisplayedGyms(filteredGyms);
-    } else {
-      setDisplayedGyms(gymsToRender);
-    }
-  }, [sort, gymsToRender, search]);
+    const filteredGyms = search
+      ? gymsToRender.filter((gym) => gym.gym_name.toLowerCase().includes(search.toLowerCase()))
+      : gymsToRender;
+    setDisplayedGyms(filteredGyms);
+  }, [search, gymsToRender]);
 
+  // Handle location change from the search panel
   const handleLocationChange = (newLocation) => {
     setLocation(newLocation);
   };
 
+  // Handle search input change from the search panel
   const handleSearchChange = (newSearch) => {
-    setSearch(newSearch);
-  };
-
-  const handleFilterChange = (newFilters) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      ...newFilters,
-    }));
-  };
-
-  const handleSortChange = (sortCriteria) => {
-    setSort(sortCriteria);
+    debouncedSearch(newSearch);
   };
 
   return (
@@ -125,14 +131,11 @@ const Search = () => {
       <SearchPanel
         onLocationChange={handleLocationChange}
         onSearchChange={handleSearchChange}
-        onFilterChange={handleFilterChange}
         onSortChange={handleSortChange}
       />
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 md:px-6">
         {isLoading || gymsToRender.length === 0
-          ? Array(6)
-              .fill(null)
-              .map((_, index) => <GymCardSkeleton key={index} />)
+          ? Array(6).fill(null).map((_, index) => <GymCardSkeleton key={index} />)
           : displayedGyms.map((gym) => (
               <GymCard
                 key={gym._id}
@@ -143,14 +146,11 @@ const Search = () => {
               />
             ))}
         <div ref={ref} />
-        {isFetchingNextPage && (
-          <div>
-            <GymCardSkeleton />
-          </div>
-        )}
+        {isFetchingNextPage && <GymCardSkeleton />}
       </div>
+      {error && <div className="text-red-500">{error}</div>} {/* Display error messages */}
     </div>
   );
 };
 
-export default Search;
+export default Search;  

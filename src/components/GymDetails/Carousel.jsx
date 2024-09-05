@@ -36,7 +36,7 @@ function Carousel({ images }) {
       </Slider>
 
       {/* Thumbnail Navigation */}
-      <div className="justify-start hidden mt-4 space-x-4 overflow-x-auto sm:flex">
+      <div className="justify-start hidden mt-4 space-x-4 overflow-x-auto sm:!flex">
         {images.slice(0, 4).map((image, index) => (
           <div
             key={index}

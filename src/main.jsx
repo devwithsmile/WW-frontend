@@ -9,6 +9,9 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Provider } from "react-redux";
 import { store } from './store.js'
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import config from "./config.js";
+
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,11 +26,13 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Router>
       <AuthProvider>
+      <GoogleOAuthProvider clientId= {config.GOOGLE_OUATH_CLIENT_ID}>
         <QueryClientProvider client={queryClient}>
         <Provider store={store}>
           <App />
           </Provider>
         </QueryClientProvider>
+        </GoogleOAuthProvider>
       </AuthProvider>
     </Router>
   </React.StrictMode>

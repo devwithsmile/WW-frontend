@@ -52,7 +52,7 @@ function Bookings() {
       dispatch(setTableCompLoadingTrue())
       dispatch(setTodayBookingLoadingTrue())
       try {
-    
+
         const response = await api.get(`/users/bookings`);
 
         const bookings = response.data.bookingsWithGymName;
@@ -115,12 +115,12 @@ function Bookings() {
 
   // Remove ratings from future bookings
   const removeUnwantedForFutureBookings = futureBookings.map(
-    ({ _id, rating, ...booking }) => booking
+    ({ _id, rating, createdAt, updatedAt, ...booking }) => booking
   );
 
   // Remove ratings from past bookings
   const removeUnwantedFromPastBookings = pastBookings.map(
-    ({ _id, rating, ...booking }) => booking
+    ({ _id, rating,createdAt, updatedAt, ...booking }) => booking
   );
 
   const renderTableWithPagination = (pagination, data, title) => {

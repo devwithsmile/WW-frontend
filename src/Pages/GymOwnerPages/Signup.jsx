@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
 import api from "../../api/axios.js";
+import GoogleLoginButton from "../../components/GoogleLoginButton.jsx";
 
 const Signup = () => {
   const {
@@ -43,9 +44,19 @@ const Signup = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await api.post(`/api/auth/owners/register`, {
-        email: data.email,
-        password: data.password,
+      let body = data;
+      if (data?.googleData) {
+        body = {
+          googleAccessToken: data.googleData,
+        };
+      } else {
+        body = {
+          email: data.email,
+          password: data.password,
+        };
+      }
+      const response = await api.post(`/api/auth/owners/register`, body, {
+        headers: { "Content-Type": "application/json" },
       });
 
       // Handle successful login
@@ -96,10 +107,7 @@ const Signup = () => {
         {/* Right side with registration form */}
         <div className="w-full md:w-1/2 lg:w-1/3 flex flex-col justify-center p-6 md:p-12">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <button className="w-full flex items-center justify-center bg-transparent py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-wwred focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 lg:w-full mb-2 text-center border border-wwred">
-              <FcGoogle className="w-6 h-6 mr-2" alt="Google Logo" />
-              Continue with Google
-            </button>
+            <GoogleLoginButton onSubmit={onSubmit} />
 
             <div className="flex items-center my-6">
               <div className="flex-grow border-t border-red-600"></div>

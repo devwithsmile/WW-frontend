@@ -6,21 +6,14 @@ import { IoPricetagOutline } from "react-icons/io5";
 import { RiPinDistanceLine } from "react-icons/ri";
 import api from "../../api/axios";
 
-const SearchPanel = ({
-  onLocationChange,
-  onSearchChange,
-  onFilterChange,
-  onSortChange,
-}) => {
+const SearchPanel = ({ onLocationChange, onSearchChange, onSortChange }) => {
   const [cities, setCities] = useState([]);
 
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const response = await api.get("/gyms/cities"); 
-        setCities(response.data); 
-
-        console.log(response.data);
+        const response = await api.get("/gyms/cities");
+        setCities(response.data);
       } catch (error) {
         console.error("Error fetching cities:", error);
       }
@@ -35,7 +28,6 @@ const SearchPanel = ({
 
   return (
     <div className="flex flex-col items-center justify-between my-6 space-y-4 md:flex-row md:space-y-0 md:space-x-4 md:px-36">
-      {/* Location Detector */}
       <div className="flex items-center justify-center">
         <FaLocationArrow className="text-red-500" size={12} />
         <select
@@ -51,8 +43,7 @@ const SearchPanel = ({
         </select>
       </div>
 
-      {/* Search Bar */}
-      <div className="flex items-center w-full sm:w-2/3 md:w-1/3">
+      <div className="relative flex items-center w-full sm:w-2/3 md:w-1/3">
         <input
           type="search"
           placeholder="Search for your gym..."
@@ -62,12 +53,11 @@ const SearchPanel = ({
         <FiSearch className="absolute ml-3 text-gray-500" />
       </div>
 
-      {/* Filter Buttons */}
       <div className="flex flex-col items-center space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
         <div className="flex space-x-4">
           <button
             onClick={() => handleSortClick("distance")}
-            className="flex  justify-center items-center w-[7.5rem] md:w-full bg-wwbg px-4 bg-transparent py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 text-center border border-wwred"
+            className="flex justify-center items-center w-[7.5rem] md:w-full bg-wwbg px-4 bg-transparent py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 text-center border border-wwred"
           >
             <RiPinDistanceLine className="mr-2" /> Distance
           </button>

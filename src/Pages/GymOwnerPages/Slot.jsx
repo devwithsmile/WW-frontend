@@ -135,12 +135,12 @@ const Slot = () => {
 
     // Check if 'From' time is before 'To' time
     if (fromTime.isAfter(toTime)) {
-      return "Start time must be before end time";
+      return "Start time < End time";
     }
 
     // Check if the duration is at least 1 hour
     if (toTime.diff(fromTime, "hour") < 1) {
-      return "Time slot must be at least 1 hour long";
+      return "Slot must be ≥ 1 hour";
     }
 
     return true;
@@ -152,14 +152,14 @@ const Slot = () => {
 
     if (!fromValue || !toValue) return true; // If either time is missing, consider it valid
 
-    // Check if 'From' time is before 'To' time
+    // Check if 'To' time is before 'From' time
     if (toTime.isBefore(fromTime)) {
-      return "End time must be after start time";
+      return "Start time < End time";
     }
 
     // Check if the duration is at least 1 hour
     if (toTime.diff(fromTime, "hour") < 1) {
-      return "Time slot must be at least 1 hour long";
+      return "Slot must be ≥ 1 hour";
     }
 
     return true;

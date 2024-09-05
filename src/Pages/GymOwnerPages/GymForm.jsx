@@ -72,7 +72,7 @@ const GymForm = () => {
 
       console.log("Response:", response.data);
       // Handle successful
-      if (response.status === 200) {
+      if (response.status === 201) {
         toast.success("Your details were saved successfully");
 
         const { reason, status } = { status: "inactive", reason: "" };
