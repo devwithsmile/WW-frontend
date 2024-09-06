@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import landingPageimage from "../../assets/landingPageImage.png";
+import devProfileImage from "../../assets/images/devsmile.jpg";
 import profilePic from "../../assets/profileP.jpg";
 // there is className called width-change in this File. we need to increase its width to make the page more appealing
 import imageForlandingPage from "../../assets/images/ownergymform.png";
@@ -184,7 +185,7 @@ function LandingPage() {
                 />
                 <div className="pt-6 text-center">
                   <h5 className="flex flex-col text-xl font-bold">
-                    <span>Muhammadh</span> <span>Kamaruddheen</span>
+                    <span>Muhammadh</span>
                   </h5>
                   <p className="mt-1 text-sm font-semibold text-gray-500 uppercase">
                     Software Developer
@@ -196,8 +197,8 @@ function LandingPage() {
               <div className="px-6">
                 <img
                   alt="Picture of Dev Saini"
-                  src="...."
-                  className="max-w-full mx-auto rounded-full shadow-lg grayscale "
+                  src={devProfileImage}
+                  className="max-w-full mx-auto rounded-full shadow-lg grayscale"
                   style={{ maxWidth: "120px" }}
                 />
                 <div className="pt-6 text-center">
