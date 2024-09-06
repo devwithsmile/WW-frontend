@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { lazy, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { FcGoogle } from "react-icons/fc";
 import api from "../../api/axios.js";
-import GoogleLoginButton from "../../components/GoogleLoginButton.jsx";
+const GoogleLoginButton = lazy(() =>
+  import("../../components/GoogleLoginButton.jsx")
+);
 
 const Signup = () => {
   const {
@@ -79,19 +80,19 @@ const Signup = () => {
   };
 
   return (
-    <div className="flex flex-col wwbg text-white">
-      <div className="flex flex-col md:flex-row justify-center items-center py-4 md:py-12">
+    <div className="flex flex-col text-white wwbg">
+      <div className="flex flex-col items-center justify-center py-4 md:flex-row md:py-12">
         {/* Left side with promotional content */}
-        <div className="w-full md:w-1/2 flex flex-col justify-center p-6 md:p-12">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-4">
+        <div className="flex flex-col justify-center w-full p-6 md:w-1/2 md:p-12">
+          <h2 className="mb-4 text-2xl font-semibold md:text-3xl">
             Are you a gym owner?
           </h2>
-          <p className="text-sm md:text-lg mb-6">
+          <p className="mb-6 text-sm md:text-lg">
             Partner with us, watch your membership soar! Manage bookings,
             showcase your amenities, and connect with a community of dedicated
             gym-goers.
           </p>
-          <ul className="list-disc pl-5 space-y-2">
+          <ul className="pl-5 space-y-2 list-disc">
             <li className="text-red-500">
               <span className="text-white">Global Exposure</span>
             </li>
@@ -105,7 +106,7 @@ const Signup = () => {
         </div>
 
         {/* Right side with registration form */}
-        <div className="w-full md:w-1/2 lg:w-1/3 flex flex-col justify-center p-6 md:p-12">
+        <div className="flex flex-col justify-center w-full p-6 md:w-1/2 lg:w-1/3 md:p-12">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <GoogleLoginButton onSubmit={onSubmit} />
 
@@ -117,7 +118,7 @@ const Signup = () => {
 
             <div className="mb-4">
               <label
-                className="block text-sm font-medium mb-1 wwred"
+                className="block mb-1 text-sm font-medium wwred"
                 htmlFor="email"
               >
                 Email
@@ -138,7 +139,7 @@ const Signup = () => {
                 }  bg-wwbg text-white focus:outline-none focus:border-red-500`}
               />
               {errors.email && (
-                <p className="text-red-500 text-sm mt-1">
+                <p className="mt-1 text-sm text-red-500">
                   {errors.email.message}
                 </p>
               )}
@@ -146,7 +147,7 @@ const Signup = () => {
 
             <div className="mb-6">
               <label
-                className="block text-sm font-medium mb-1"
+                className="block mb-1 text-sm font-medium"
                 htmlFor="password"
               >
                 Password
@@ -187,7 +188,7 @@ const Signup = () => {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500"
+                    className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500"
                   >
                     {showPassword ? (
                       <AiOutlineEye />
@@ -197,7 +198,7 @@ const Signup = () => {
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="text-red-500 text-sm mt-1">
+                  <p className="mt-1 text-sm text-red-500">
                     {errors.password.message}
                   </p>
                 )}
@@ -206,7 +207,7 @@ const Signup = () => {
 
             <div className="mb-6">
               <label
-                className="block text-sm font-medium mb-1"
+                className="block mb-1 text-sm font-medium"
                 htmlFor="confirm-password"
               >
                 Confirm Password
@@ -232,7 +233,7 @@ const Signup = () => {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500"
+                  className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500"
                 >
                   {showConfirmPassword ? (
                     <AiOutlineEye />
@@ -242,7 +243,7 @@ const Signup = () => {
                 </button>
               </div>
               {errors.confirmPassword && (
-                <p className="text-red-500 text-sm mt-1">
+                <p className="mt-1 text-sm text-red-500">
                   {errors.confirmPassword.message}
                 </p>
               )}
@@ -256,7 +257,7 @@ const Signup = () => {
             </button>
           </form>
 
-          <p className="text-sm text-center mt-4">
+          <p className="mt-4 text-sm text-center">
             Already have an account?{" "}
             <Link to="/owners/login" className="text-red-500">
               Sign In
@@ -267,9 +268,9 @@ const Signup = () => {
       </div>
 
       {/* Footer */}
-      <div className="text-white py-6 md:py-12 border-t-2 border-t-red-700">
-        <div className="container mx-auto flex flex-col md:flex-row justify-center items-center gap-4">
-          <h3 className="text-xl md:text-2xl font-semibold mb-2 md:mb-0">
+      <div className="py-6 text-white border-t-2 md:py-12 border-t-red-700">
+        <div className="container flex flex-col items-center justify-center gap-4 mx-auto md:flex-row">
+          <h3 className="mb-2 text-xl font-semibold md:text-2xl md:mb-0">
             Still got some questions?
           </h3>
           <Link

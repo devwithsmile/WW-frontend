@@ -72,7 +72,7 @@ function BookNow({ price, gym_id, schedule }) {
     const dayName = dayjs(date).format("dddd");
     const availableSlots = schedule?.slots?.[dayName] ?? []; // Safely access schedule and slots
 
-    console.log(availableSlots);
+    // console.log(availableSlots);
 
     setSlots(availableSlots);
 

@@ -1,14 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React, { lazy, useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth";
 import api from "../../api/axios.js";
 import { usePagination } from "pagination-react-js";
-import TableComponent from "../../components/Bookings/TableComponent.jsx";
-import TodaysBookingSection from "../../components/Bookings/TodaysBookingSection.jsx";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
-import { setTodayBookingLoadingFalse, setTodayBookingLoadingTrue } from "../../redux/todayBookingSlice.js";
-import { setTableCompLoadingFalse, setTableCompLoadingTrue } from "../../redux/tableCompSlice.js";
-import BookingsPageSkeleton from "../../components/Skeletons/BookingsPageSkeleton.jsx";
+import {
+  setTodayBookingLoadingFalse,
+  setTodayBookingLoadingTrue,
+} from "../../redux/todayBookingSlice.js";
+import {
+  setTableCompLoadingFalse,
+  setTableCompLoadingTrue,
+} from "../../redux/tableCompSlice.js";
+
+const BookingsPageSkeleton = lazy(() =>
+  import("../../components/Skeletons/BookingsPageSkeleton.jsx")
+);
+const TableComponent = lazy(() =>
+  import("../../components/Bookings/TableComponent.jsx")
+);
+const TodaysBookingSection = lazy(() =>
+  import("../../components/Bookings/TodaysBookingSection.jsx")
+);
 
 function Bookings() {
   const [todayBookings, setTodayBookings] = useState([]);
@@ -18,14 +31,17 @@ function Bookings() {
   const [noBookings, setNoBookings] = useState(false); // State to handle no bookings
   const { isAuthenticated } = useAuth();
 
-  const isTodayBookingLoading = useSelector((state) => state.isBookingsLoading.todayBookingLoading.loading);
-  const isTableLoading = useSelector((state) => state.isBookingsLoading.tableCompLoading.loading);
+  const isTodayBookingLoading = useSelector(
+    (state) => state.isBookingsLoading.todayBookingLoading.loading
+  );
+  const isTableLoading = useSelector(
+    (state) => state.isBookingsLoading.tableCompLoading.loading
+  );
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   // Check if any component is still loading
   const loading = isTodayBookingLoading || isTableLoading;
-
 
   const pastPagination = usePagination({
     activePage: 1,
@@ -49,14 +65,13 @@ function Bookings() {
 
   useEffect(() => {
     const fetchBookings = async () => {
-      dispatch(setTableCompLoadingTrue())
-      dispatch(setTodayBookingLoadingTrue())
+      dispatch(setTableCompLoadingTrue());
+      dispatch(setTodayBookingLoadingTrue());
       try {
-
         const response = await api.get(`/users/bookings`);
 
         const bookings = response.data.bookingsWithGymName;
-        console.log("All bookings : ", bookings);
+        // console.log("All bookings : ", bookings);
 
         if (bookings.length > 0) {
           const today = new Date();
@@ -83,7 +98,7 @@ function Bookings() {
             return bookingDate.isAfter(today, "day");
           });
 
-          console.log("todayBookingstodayBookings", todayBookings);
+          // console.log("todayBookingstodayBookings", todayBookings);
 
           setTodayBookings(todayBookings);
           setPastBookings(pastBookings);
@@ -103,10 +118,10 @@ function Bookings() {
         }
       } catch (err) {
         setError("Failed to fetch bookings.");
-        console.log(err);
+        // console.log(err);
       } finally {
-        dispatch(setTodayBookingLoadingFalse())
-        dispatch(setTableCompLoadingFalse())
+        dispatch(setTodayBookingLoadingFalse());
+        dispatch(setTableCompLoadingFalse());
       }
     };
 
@@ -120,7 +135,7 @@ function Bookings() {
 
   // Remove ratings from past bookings
   const removeUnwantedFromPastBookings = pastBookings.map(
-    ({ _id, rating,createdAt, updatedAt, ...booking }) => booking
+    ({ _id, rating, createdAt, updatedAt, ...booking }) => booking
   );
 
   const renderTableWithPagination = (pagination, data, title) => {
@@ -146,8 +161,9 @@ function Bookings() {
               <li
                 key={index}
                 onClick={() => setActivePage(number)}
-                className={`pagination-item ${number === pageNumbers.activePage ? "active" : ""
-                  }`}
+                className={`pagination-item ${
+                  number === pageNumbers.activePage ? "active" : ""
+                }`}
               >
                 {number}
               </li>

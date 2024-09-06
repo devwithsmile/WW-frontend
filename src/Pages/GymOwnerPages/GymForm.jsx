@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { lazy, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import GymForm1 from "../../components/GymForm/GymForm1";
-import GymForm2 from "../../components/GymForm/GymForm2";
 import api from "../../api/axios.js";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth.jsx";
+
+const GymForm1 = lazy(() => import("../../components/GymForm/GymForm1.jsx"));
+const GymForm2 = lazy(() => import("../../components/GymForm/GymForm2.jsx"));
 
 const GymForm = () => {
   const [currentForm, setCurrentForm] = useState("form1");
@@ -57,12 +58,12 @@ const GymForm = () => {
       // Debugging: Log FormData entries
       for (const [key, value] of formData.entries()) {
         if (key === "images") {
-          console.log("Images:");
+          // console.log("Images:");
           if (value instanceof File) {
-            console.log(`File name: ${value.name}, File size: ${value.size}`);
+            // console.log(`File name: ${value.name}, File size: ${value.size}`);
           }
         } else {
-          console.log(`${key}: ${value}`);
+          // console.log(`${key}: ${value}`);
         }
       }
 
@@ -70,7 +71,7 @@ const GymForm = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      console.log("Response:", response.data);
+      // console.log("Response:", response.data);
       // Handle successful
       if (response.status === 201) {
         toast.success("Your details were saved successfully");

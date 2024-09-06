@@ -136,13 +136,13 @@ const Profile = () => {
 
     if (pincode && /^\d{6}$/.test(pincode)) {
       const address = indianPincodes.getPincodeDetails(Number(pincode));
-      console.log(address);
+      // console.log(address);
       if (address) {
         setValue("city", address.name);
         setValue("state", address.state);
-        console.log(getValues("pincode"));
-        console.log(getValues("city"));
-        console.log(getValues("state"));
+        // console.log(getValues("pincode"));
+        // console.log(getValues("city"));
+        // console.log(getValues("state"));
       }
     }
   };
@@ -165,8 +165,8 @@ const Profile = () => {
     try {
       // Prepare data to send only modified fields
       // TODO: Compare the initial data and changed data and send only new changes
-      //   console.log(data)
-      //   console.log(initialValues._id)
+      //   // console.log(data)
+      //   // console.log(initialValues._id)
 
       //   const updatedFields = {}
 
@@ -176,14 +176,14 @@ const Profile = () => {
       //     }
       //   })
 
-      //   console.log('updatedFields gym data:', updatedFields)
+      //   // console.log('updatedFields gym data:', updatedFields)
 
       const response = await api.patch(`/gyms`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
       if (response.status === 200) {
-        console.log("response : " + response);
+        // console.log("response : " + response);
         toast.success("Gym details updated successfully.");
       }
 
@@ -192,7 +192,7 @@ const Profile = () => {
       //   headers: { 'Content-Type': 'multipart/form-data' },
       // })
       // if (response.status === 200) {
-      //   console.log('response : ' + response)
+      //   // console.log('response : ' + response)
       //   toast.success('Gym details updated successfully.')
       // }
       //   } else {

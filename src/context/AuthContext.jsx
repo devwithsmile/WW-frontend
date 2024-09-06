@@ -10,14 +10,14 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [status, setStatus] = useState(null);
 
-  // console.log('AuthState:', isAuthenticated)
+  // console.log("AuthState:", isAuthenticated);
 
   useEffect(() => {
     // Initialize authentication state
     const token = getAuthToken();
     if (token) {
       const decodedUser = jwtDecode(token);
-      // console.log('Decoded User: ', decodedUser.payload)
+      // console.log("Decoded User: ", decodedUser.payload);
       setIsAuthenticated(token);
       setUser(decodedUser.payload);
 
@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("auth_token", token);
     setIsAuthenticated(token);
     const decodedUser = jwtDecode(token);
-    // console.log('Decoded User: ', decodedUser.payload)
+    // console.log("Decoded User: ", decodedUser.payload);
     setUser(decodedUser.payload);
     // setting owner account status
     if (decodedUser.payload.role == "owner") {
@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(false);
   };
 
-  // console.log('AuthState:', isAuthenticated)
+  // console.log("AuthState:", isAuthenticated);
 
   return (
     <AuthContext.Provider

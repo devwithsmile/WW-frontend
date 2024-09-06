@@ -26,7 +26,7 @@ const ResetPassword = () => {
     const queryParams = new URLSearchParams(location.search);
     const tokenFromQuery = queryParams.get("token");
 
-    console.log("Token Params", tokenFromQuery);
+    // console.log("Token Params", tokenFromQuery);
 
     if (tokenFromQuery) {
       setToken(tokenFromQuery);

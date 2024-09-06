@@ -81,13 +81,13 @@ const GymForm2 = ({ onSubmit, initialData, onPrevious }) => {
 
     if (pincode && /^\d{6}$/.test(pincode)) {
       const address = indianPincodes.getPincodeDetails(Number(pincode));
-      console.log(address);
+      // console.log(address);
       if (address) {
         setValue("city", address.name);
         setValue("state", address.state);
-        console.log(getValues("pincode"));
-        console.log(getValues("city"));
-        console.log(getValues("state"));
+        // console.log(getValues("pincode"));
+        // console.log(getValues("city"));
+        // console.log(getValues("state"));
       }
     }
   };

@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import landingPageimage from "../../assets/landingPageImage.png";
 import devProfileImage from "../../assets/images/devsmile.jpg";
 import profilePic from "../../assets/profileP.jpg";
 // there is className called width-change in this File. we need to increase its width to make the page more appealing
-import imageForlandingPage from "../../assets/images/ownergymform.png";
 function LandingPage() {
   return (
     <div className="pb-10 bg-grey-900">

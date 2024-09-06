@@ -1,12 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { lazy, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { FaStar } from 'react-icons/fa'
-import Carousel from '../../components/GymDetails/Carousel'
-import BookNow from '../../components/GymDetails/BookNow'
-import Facilities from '../../components/GymDetails/Facilites' // Ensure correct component name
-import CurrentLocationMap from '../../components/GymDetails/CurrentLocationMap'
-import AboutSection from '../../components/GymDetails/AboutSection'
-import ContactGYM from '../../components/GymDetails/ContactGYM'
+
 import api from '../../api/axios'
 import { useDispatch, useSelector } from 'react-redux'
 import { setAboutLoadingFalse, setAboutLoadingTrue } from '../../redux/aboutSectionSlice'
@@ -15,7 +10,16 @@ import { setCarouselLoadingFalse, setCarouselLoadingTrue } from '../../redux/Car
 import { setContactGymLoadingFalse, setContactGymLoadingTrue } from '../../redux/contactGymSlice'
 import { setCurrentLocationLoadingFalse, setCurrentLocationLoadingTrue } from '../../redux/currentLocationSlice'
 import { setFacilitiesLoadingFalse, setFacilitiesLoadingTrue } from '../../redux/facilitiesSlice'
-import GymDetailsSkeleton from '../../components/Skeletons/GymDetailsSkeleton'
+
+
+const Carousel = lazy(() => import('../../components/GymDetails/Carousel'));
+const BookNow = lazy(() => import('../../components/GymDetails/BookNow'));
+const Facilities = lazy(() => import('../../components/GymDetails/Facilites')); // Ensure correct component name
+const CurrentLocationMap = lazy(() => import('../../components/GymDetails/CurrentLocationMap'));
+const AboutSection = lazy(() => import('../../components/GymDetails/AboutSection'));
+const ContactGYM = lazy(() => import('../../components/GymDetails/ContactGYM'));
+const GymDetailsSkeleton = lazy(() => import('../../components/Skeletons/GymDetailsSkeleton'));
+
 
 function GymDetailsPage() {
   const { id } = useParams() // Here we have the GymID

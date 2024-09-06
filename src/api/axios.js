@@ -1,20 +1,20 @@
-import axios from 'axios'
-import { getAuthToken } from '../utils/auth'
-import config from '../config'
+import axios from "axios";
+import { getAuthToken } from "../utils/auth";
+import config from "../config";
 
 const api = axios.create({
   baseURL: config.BASE_BACKEND_URL,
-})
+});
 
 //Setup an interceptor to add the token to the request headers
 api.interceptors.request.use((data) => {
-  // console.log('Request', data)
-  const token = getAuthToken()
+  // console.log("Request", data);
+  const token = getAuthToken();
   if (token) {
-    data.headers.Authorization = `Bearer ${token}`
+    data.headers.Authorization = `Bearer ${token}`;
   }
-  return data
-})
+  return data;
+});
 
 // Set up an interceptor to handle responses
 api.interceptors.response.use(
@@ -26,8 +26,8 @@ api.interceptors.response.use(
       // localStorage.removeItem('token');
       // Redirect to login page
     }
-    return Promise.reject(error)
+    return Promise.reject(error);
   }
-)
+);
 
-export default api
+export default api;

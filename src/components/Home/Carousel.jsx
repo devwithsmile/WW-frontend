@@ -43,7 +43,7 @@ const useResponsiveNum = () => {
 
   // Log whenever num changes
   useEffect(() => {
-    console.log("num updated:", num);
+    // console.log("num updated:", num);
   }, [num]);
 
   return num;

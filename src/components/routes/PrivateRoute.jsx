@@ -25,8 +25,8 @@ const PrivateRoute = ({ element, allowedRoles }) => {
 
   // Check if the role is allowed
   if (role !== allowedRoles) {
-    console.log(role);
-    console.log(allowedRoles);
+    // console.log(role);
+    // console.log(allowedRoles);
     // If the role is not allowed, redirect to not-authorized page
     return <Navigate to="/not-authorized" replace />;
   }

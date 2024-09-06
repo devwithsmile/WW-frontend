@@ -1,15 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { lazy, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import useAuth from "../../hooks/useAuth"; // Custom hook for authentication
 import profile_img from "../../assets/svg/profile.svg";
 import { toast } from "react-toastify";
 import api from "../../api/axios.js";
-import ProfileSkeleton from "../../components/Skeletons/ProfileSkeleton.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setProfileLoadingFalse,
   setProfileLoadingTrue,
 } from "../../redux/profileSkeleton.js";
+
+const ProfileSkeleton = lazy(() =>
+  import("../../components/Skeletons/ProfileSkeleton.jsx")
+);
 
 // List of allowed MIME types and file extensions
 const allowedTypes = [
@@ -56,7 +59,7 @@ const Profile = () => {
           setImage(user?.profile_image || profile_img);
 
           if (response.status === 200) {
-            console.log("Logged In data : ", response.data.user);
+            // console.log("Logged In data : ", response.data.user);
             const userdata = response.data.user;
 
             reset({
@@ -138,7 +141,7 @@ const Profile = () => {
 
   const deleteImage = async () => {
     try {
-      const response = await api.delete('/users')
+      const response = await api.delete("/users");
 
       if (response.status === 200) {
         setUser((prevUser) => ({
@@ -150,16 +153,13 @@ const Profile = () => {
         setValue("profile_image", null); // Clear selected file
         // set the user
 
-        toast.success("Profile picture deleted successfully")
+        toast.success("Profile picture deleted successfully");
       } else {
-        toast.error("error in deleting profile picture")
+        toast.error("error in deleting profile picture");
       }
-
     } catch (error) {
       console.error(error);
-
     }
-
   };
 
   // RestPassword Modal
@@ -169,7 +169,7 @@ const Profile = () => {
   const preferredTimings = ["morning", "afternoon", "evening", "night"];
 
   const onSubmit = async (data) => {
-    console.log(data);
+    // console.log(data);
 
     try {
       const response = await api.patch(
@@ -185,7 +185,7 @@ const Profile = () => {
 
       // Handle successful login
       if (response.status === 200) {
-        console.log("After user data saved : ", response.data.user);
+        // console.log("After user data saved : ", response.data.user);
         const userdata = response.data.user;
 
         reset({
@@ -201,7 +201,6 @@ const Profile = () => {
           ...prevUser,
           profile_image: userdata.profile_image,
         }));
-
 
         // setImage(userdata?.profile_image || profile_img)
         setActiveButton(userdata.preferred_time);
@@ -220,7 +219,7 @@ const Profile = () => {
       }
     }
   };
-  console.log(profileLoading);
+  // console.log(profileLoading);
 
   return (
     <>
@@ -290,8 +289,9 @@ const Profile = () => {
                         message: "Full name must be less than 50 characters",
                       },
                     })}
-                    className={`w-full px-3 py-2 border ${errors.full_name ? "border-red-500" : "border-gray-600"
-                      } bg-wwbg text-white focus:outline-none focus:border-red-500`}
+                    className={`w-full px-3 py-2 border ${
+                      errors.full_name ? "border-red-500" : "border-gray-600"
+                    } bg-wwbg text-white focus:outline-none focus:border-red-500`}
                   />
                   {errors.full_name && (
                     <p className="mt-1 text-sm text-red-500">
@@ -318,8 +318,9 @@ const Profile = () => {
                       },
                     })}
                     placeholder="abc@example.com"
-                    className={`w-full px-3 py-2 border ${errors.email ? "border-red-500" : "border-gray-600"
-                      } bg-wwbg text-white focus:outline-none focus:border-red-500`}
+                    className={`w-full px-3 py-2 border ${
+                      errors.email ? "border-red-500" : "border-gray-600"
+                    } bg-wwbg text-white focus:outline-none focus:border-red-500`}
                   />
                   {errors.email && (
                     <p className="mt-1 text-sm text-red-500">
@@ -348,8 +349,9 @@ const Profile = () => {
                         message: "Age must be less than 120 years",
                       },
                     })}
-                    className={`w-full px-3 py-2 border ${errors.age ? "border-red-500" : "border-gray-600"
-                      } bg-wwbg text-white focus:outline-none focus:border-red-500`}
+                    className={`w-full px-3 py-2 border ${
+                      errors.age ? "border-red-500" : "border-gray-600"
+                    } bg-wwbg text-white focus:outline-none focus:border-red-500`}
                   />
                   {errors.age && (
                     <p className="mt-1 text-sm text-red-500">
@@ -377,8 +379,9 @@ const Profile = () => {
                         message: "Invalid contact number",
                       },
                     })}
-                    className={`w-full px-3 py-2 border ${errors.phone_number ? "border-red-500" : "border-gray-600"
-                      } bg-wwbg text-white focus:outline-none focus:border-red-500`}
+                    className={`w-full px-3 py-2 border ${
+                      errors.phone_number ? "border-red-500" : "border-gray-600"
+                    } bg-wwbg text-white focus:outline-none focus:border-red-500`}
                   />
                   {errors.phone_number && (
                     <p className="mt-1 text-sm text-red-500">
@@ -406,10 +409,11 @@ const Profile = () => {
                   <button
                     key={timing}
                     type="button"
-                    className={`px-4 py-2.5 w-1/2 md:w-0 mx-auto text-sm font-semibold shadow-sm border border-wwred flex-grow text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 capitalize ${activeButton === timing
-                      ? "bg-wwred text-white md:hover:bg-red-600 md:hover:text-white"
-                      : "bg-transparent text-red-500 md:hover:bg-red-600 md:hover:text-white"
-                      } `}
+                    className={`px-4 py-2.5 w-1/2 md:w-0 mx-auto text-sm font-semibold shadow-sm border border-wwred flex-grow text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 capitalize ${
+                      activeButton === timing
+                        ? "bg-wwred text-white md:hover:bg-red-600 md:hover:text-white"
+                        : "bg-transparent text-red-500 md:hover:bg-red-600 md:hover:text-white"
+                    } `}
                     onClick={() => setActiveButton(timing)}
                   >
                     {timing}

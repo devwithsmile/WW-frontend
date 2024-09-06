@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React, { lazy, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import CheckoutCard from "../../components/CheckoutCard";
+const CheckoutCard = lazy(() => import("../../components/CheckoutCard.jsx"));
 
 const Payment = () => {
   const navigate = useNavigate();

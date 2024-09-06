@@ -59,9 +59,9 @@ const Login = () => {
       if (response.status === 200) {
         toast.success(response.data.message);
 
-        console.log("Logged In data : ", response.data);
+        // console.log("Logged In data : ", response.data);
         const { status, reason } = response.data;
-        console.log(reason, status);
+        // console.log(reason, status);
 
         login(response.data.token, status);
 
@@ -89,10 +89,10 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col wwbg text-white">
-      <div className="flex flex-col md:flex-row justify-center items-center py-4 md:py-12">
+    <div className="flex flex-col text-white wwbg">
+      <div className="flex flex-col items-center justify-center py-4 md:flex-row md:py-12">
         {/* Left side with login form */}
-        <div className="order-1 md:order-0 w-full md:w-1/2 lg:w-1/3 flex flex-col justify-center p-6 md:p-12">
+        <div className="flex flex-col justify-center order-1 w-full p-6 md:order-0 md:w-1/2 lg:w-1/3 md:p-12">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <GoogleLoginButton onSubmit={onSubmit} />
 
@@ -104,7 +104,7 @@ const Login = () => {
 
             <div className="mb-4">
               <label
-                className="block text-sm font-medium mb-1 wwred"
+                className="block mb-1 text-sm font-medium wwred"
                 htmlFor="email"
               >
                 Email
@@ -125,7 +125,7 @@ const Login = () => {
                 }  bg-wwbg text-white focus:outline-none focus:border-red-500`}
               />
               {errors.email && (
-                <p className="text-red-500 text-sm mt-1">
+                <p className="mt-1 text-sm text-red-500">
                   {errors.email.message}
                 </p>
               )}
@@ -133,7 +133,7 @@ const Login = () => {
 
             <div className="mb-6">
               <label
-                className="block text-sm font-medium mb-1"
+                className="block mb-1 text-sm font-medium"
                 htmlFor="password"
               >
                 Password
@@ -155,7 +155,7 @@ const Login = () => {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500"
+                    className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500"
                   >
                     {showPassword ? (
                       <AiOutlineEye />
@@ -165,7 +165,7 @@ const Login = () => {
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="text-red-500 text-sm mt-1">
+                  <p className="mt-1 text-sm text-red-500">
                     {errors.password.message}
                   </p>
                 )}
@@ -180,7 +180,7 @@ const Login = () => {
             </button>
           </form>
 
-          <p className="text-sm text-center my-4">
+          <p className="my-4 text-sm text-center">
             Don’t have an account?{" "}
             <Link to="/owners/register" className="text-red-500">
               Sign Up
@@ -197,8 +197,8 @@ const Login = () => {
 
         {/* TODO: left in mobile center in desktop */}
         {/* Right side with welcome message */}
-        <div className="order-0 md:order-1 w-full md:w-1/2 flex flex-col justify-center items-center p-6 md:p-12">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-4">
+        <div className="flex flex-col items-center justify-center w-full p-6 order-0 md:order-1 md:w-1/2 md:p-12">
+          <h2 className="mb-4 text-2xl font-semibold md:text-3xl">
             Welcome <span className="text-red-500">Fitness Arena,</span>
           </h2>
           <ul className="space-y-2 text-sm md:text-lg">

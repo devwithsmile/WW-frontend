@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Home from '../GymUserPages/Home';
 import errorImage from "../../assets/errorPage.svg"
 
 function PageNotFound() {

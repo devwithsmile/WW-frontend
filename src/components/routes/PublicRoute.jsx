@@ -12,7 +12,7 @@ const PublicRoute = ({ element }) => {
     // Allow them to view the non-authenticated page when user/owner is not logged in
     return element;
   }
-  console.log("Im coming here ", status);
+  // console.log("Im coming here ", status);
 
   // Authenticated user/owner
   const decodedUser = jwtDecode(token);

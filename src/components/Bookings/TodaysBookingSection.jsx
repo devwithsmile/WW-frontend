@@ -27,12 +27,12 @@ function TodaysBookingSection({ todayBookings = [] }) {
   useEffect(() => {
     if (todayBookings.length > 0) {
       const todayDate = moment().format("DD/MM/YYYY"); // Replace '/' with '-' for the API call
-      console.log(todayDate);
+      // console.log(todayDate);
 
       api
         .get(`users/bookings/images?date=${todayDate}`)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
 
           setGymImage(response.data.bookingsWithImages[0].image_urls[0]);
         })
@@ -74,7 +74,7 @@ function TodaysBookingSection({ todayBookings = [] }) {
 
   const booking = todayBookings[0];
 
-  console.log(booking);
+  // console.log(booking);
 
   const gymName = booking.gym_name || "Gym Name";
   const bookingDate = formatDate(booking.date) || "Booking Date";
@@ -126,7 +126,6 @@ function TodaysBookingSection({ todayBookings = [] }) {
     }
   };
 
-
   return (
     <>
       <h3 className="mb-4 text-lg font-bold">Today{"'"}s Bookings</h3>
@@ -161,10 +160,11 @@ function TodaysBookingSection({ todayBookings = [] }) {
                 (star) => (
                   <span
                     key={star}
-                    className={`text-2xl cursor-pointer ${(hover || rating) >= star
-                      ? "text-red-500"
-                      : "text-gray-600"
-                      }`}
+                    className={`text-2xl cursor-pointer ${
+                      (hover || rating) >= star
+                        ? "text-red-500"
+                        : "text-gray-600"
+                    }`}
                     onClick={async () =>
                       setRating(
                         star,
@@ -249,8 +249,6 @@ function TodaysBookingSection({ todayBookings = [] }) {
           </div>
         </div>
       </div>
-
-
     </>
   );
 }

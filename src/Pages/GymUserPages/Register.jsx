@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { lazy, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -6,7 +6,9 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { IoCloseSharp } from "react-icons/io5";
 import signup_img from "../../assets/images/signup.jpg";
 import api from "../../api/axios.js";
-import GoogleLoginButton from "../../components/GoogleLoginButton.jsx";
+const GoogleLoginButton = lazy(() =>
+  import("../../components/GoogleLoginButton.jsx")
+);
 
 const Register = () => {
   const {
@@ -81,15 +83,15 @@ const Register = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center relative md:flex-row h-screen">
+    <div className="relative flex flex-col justify-center h-screen md:flex-row">
       <button
         onClick={() => navigate(-1)}
-        className="absolute top-4 right-4 text-red-500"
+        className="absolute text-red-500 top-4 right-4"
       >
         <IoCloseSharp size={24} />
       </button>
       {/* Left side with image, hidden on mobile */}
-      <div className="hidden md:block md:w-1/2 bg-cover bg-center relative overflow-hidden">
+      <div className="relative hidden overflow-hidden bg-center bg-cover md:block md:w-1/2">
         <img
           src={signup_img}
           alt="Workout"
@@ -98,19 +100,19 @@ const Register = () => {
       </div>
 
       {/* Right side with form */}
-      <div className="w-full md:w-1/2 flex items-center justify-center p-6 md:p-12">
+      <div className="flex items-center justify-center w-full p-6 md:w-1/2 md:p-12">
         <div
-          className="w-full max-w-md wwbg text-white flex flex-col justify-center p-6 md:p-12 shadow-l"
+          className="flex flex-col justify-center w-full max-w-md p-6 text-white wwbg md:p-12 shadow-l"
           style={{
             boxShadow:
               "-4px 0 8px rgba(0, 0, 0, 0.1), 4px 0 8px rgba(0, 0, 0, 0.1)",
           }}
         >
-          <h2 className="text-2xl md:text-3xl font-semibold mb-4 text-center md:text-start">
+          <h2 className="mb-4 text-2xl font-semibold text-center md:text-3xl md:text-start">
             Create new account
             <span className="mx-2 font-bold text-red-700">.</span>
           </h2>
-          <p className="text-sm text-gray-300 mb-8 text-center md:text-start">
+          <p className="mb-8 text-sm text-center text-gray-300 md:text-start">
             Already have an account?{" "}
             <Link to="/login" className="text-red-500 underline">
               Sign In
@@ -120,7 +122,7 @@ const Register = () => {
           <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-4">
               <label
-                className="block text-sm font-medium mb-1 wwred"
+                className="block mb-1 text-sm font-medium wwred"
                 htmlFor="email"
               >
                 Email
@@ -141,7 +143,7 @@ const Register = () => {
                 }  bg-wwbg text-white focus:outline-none focus:border-red-500`}
               />
               {errors.email && (
-                <p className="text-red-500 text-sm mt-1">
+                <p className="mt-1 text-sm text-red-500">
                   {errors.email.message}
                 </p>
               )}
@@ -149,7 +151,7 @@ const Register = () => {
 
             <div className="mb-4">
               <label
-                className="block text-sm font-medium mb-1"
+                className="block mb-1 text-sm font-medium"
                 htmlFor="password"
               >
                 Password
@@ -189,7 +191,7 @@ const Register = () => {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500"
+                    className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500"
                   >
                     {showPassword ? (
                       <AiOutlineEye />
@@ -199,7 +201,7 @@ const Register = () => {
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="text-red-500 text-sm mt-1">
+                  <p className="mt-1 text-sm text-red-500">
                     {errors.password.message}
                   </p>
                 )}
@@ -208,7 +210,7 @@ const Register = () => {
 
             <div className="mb-6">
               <label
-                className="block text-sm font-medium mb-1"
+                className="block mb-1 text-sm font-medium"
                 htmlFor="confirm-password"
               >
                 Confirm Password
@@ -235,7 +237,7 @@ const Register = () => {
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500"
+                    className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500"
                   >
                     {showConfirmPassword ? (
                       <AiOutlineEye />
@@ -245,7 +247,7 @@ const Register = () => {
                   </button>
                 </div>
                 {errors.confirmPassword && (
-                  <p className="text-red-500 text-sm mt-1">
+                  <p className="mt-1 text-sm text-red-500">
                     {errors.confirmPassword.message}
                   </p>
                 )}
