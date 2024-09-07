@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import landingPageimage from "../../assets/landingPageImage.png";
 import devProfileImage from "../../assets/images/devsmile.jpg";
 import profilePic from "../../assets/profileP.jpg";
 // there is className called width-change in this File. we need to increase its width to make the page more appealing
+import imageForlandingPage from "../../assets/images/ownergymform.png";
 function LandingPage() {
   return (
     <div className="pb-10 bg-grey-900">
@@ -163,10 +164,10 @@ function LandingPage() {
         <div className="container px-4 mx-auto">
           <div className="flex flex-wrap justify-center mb-24 text-center">
             <div className="w-full px-4 lg:w-6/12">
-              <h2 className="text-4xl font-semibold">
+              <h2 className="text-4xl font-semibold text-wwTitleRed">
                 Meet the Team Behind WorkOurWings
               </h2>
-              <p className="m-4 text-lg leading-relaxed text-gray-600">
+              <p className="m-4 text-lg leading-relaxed text-wwsecondarytext">
                 Our talented developers have worked tirelessly to bring you the
                 best experience with WorkOurWings. Get to know the faces behind
                 the code.
