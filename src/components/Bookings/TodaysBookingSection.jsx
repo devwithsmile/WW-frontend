@@ -76,7 +76,7 @@ function TodaysBookingSection({ todayBookings = [] }) {
 
   // console.log(booking);
 
-  const gymName = booking.gym_name || "Gym Name";
+  const gymName = booking.gym || "Gym Name";
   const bookingDate = formatDate(booking.date) || "Booking Date";
 
   const bookingSlot = `${booking.from} - ${booking.to}` || "Booking Slot";
